@@ -1,0 +1,36 @@
+<!DOCTYPE hibernate-configuration SYSTEM 
+    "classpath://org/hibernate/hibernate-configuration-3.0.dtd">
+    
+
+
+<hibernate-configuration>
+   <session-factory>
+      <property name="hibernate.dialect">org.hibernate.dialect.DerbyDialect</property>
+      <property name="hibernate.connection.driver_class">org.apache.derby.jdbc.ClientDriver</property>
+      <property name="hibernate.connection.url">jdbc:derby://localhost:1527/MetroSystemDB</property>
+      <property name="hibernate.connection.username">admin</property>
+      <property name="hibernate.connection.password">admin</property>
+      <property name="show_sql">TRUE</property>
+      <!-- C3p0 connection pool -->
+      <property name="hibernate.c3p0.min_size">5</property>
+      <property name="hibernate.c3p0.max_size">20</property>
+      <property name="hibernate.c3p0.timeout">300</property>
+      <property name="hibernate.c3p0.max_statements">50</property>
+      <property name="hibernate.c3p0.idle_test_period">3000</property>
+      
+   
+      <mapping class="com.metrosystem.dao.beans.MetroStationDTO"/>
+      <mapping class="com.metrosystem.dao.beans.RouteDTO"/>
+      <mapping class="com.metrosystem.dao.beans.StationRouteDTO"/>
+      <mapping class="com.metrosystem.dao.beans.MetroTrainDTO"/>
+      <mapping class="com.metrosystem.dao.beans.MetroUserDTO"/>
+      <mapping class="com.metrosystem.dao.beans.BankAccountDTO"/>
+      <mapping class="com.metrosystem.dao.beans.CreditCardDTO"/>
+      <mapping class="com.metrosystem.dao.beans.DebitCardDTO"/>
+      <mapping class="com.metrosystem.dao.beans.NetBankingDTO"/>
+      <mapping class="com.metrosystem.dao.beans.MetroCardDTO"/>
+      <mapping class="com.metrosystem.dao.beans.TrainJourneyDTO"/>
+      <mapping class="com.metrosystem.dao.beans.UserJourneyDTO"/>
+      <mapping class="com.metrosystem.dao.beans.TrainJourneyMonitorDTO"/>
+</session-factory>
+</hibernate-configuration>
