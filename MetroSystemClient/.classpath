@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/test"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="lib/derbyclient.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/derby.jar"/>
+	<classpathentry kind="lib" path="lib/javax.persistence-2.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/j2ee-5.0.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-core-4.3.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-logging-3.3.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-commons-annotations-4.0.3.Final.jar"/>
+	<classpathentry kind="lib" path="lib/javassist-3.20.0-GA.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-c3p0-4.3.10.Final.jar"/>
+	<classpathentry kind="lib" path="lib/c3p0-0.9.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/spring-aop-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-context-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-core-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-jdbc-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-orm-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-tx-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-beans-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-expression-4.1.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="lib/hamcrest-all-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/aspectjrt-1.7.3.jar"/>
+	<classpathentry kind="lib" path="lib/aspectjweaver-1.7.3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
