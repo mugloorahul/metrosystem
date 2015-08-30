@@ -33,6 +33,6 @@
 	<classpathentry kind="lib" path="lib/spring-expression-4.1.7.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-jdbc-4.1.7.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-2.7.6.jar"/>
-	<classpathentry kind="lib" path="lib/javaee-api-5.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-javaee-all-6.0-3.0.0.Final.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
