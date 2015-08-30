@@ -33,7 +33,7 @@ public class RouteServiceTest {
 	@Test
 	public void createRoute(){
 		try{
-           Integer routeId = routeService.createRoute("Pune to Delhi");	
+           Integer routeId = routeService.createRoute("Jammu to Pune");	
            assertTrue(routeId != null);
 		}
 		catch(Exception e){

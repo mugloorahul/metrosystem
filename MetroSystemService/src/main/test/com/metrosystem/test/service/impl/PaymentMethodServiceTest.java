@@ -88,4 +88,16 @@ public class PaymentMethodServiceTest {
 			assertTrue(false);
 		}
 	}
+	
+	@Test
+	public void deleteCreditCard(){
+		
+		try{
+			paymentService.deleteCreditCard("1889 87656 123 456");
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
 }

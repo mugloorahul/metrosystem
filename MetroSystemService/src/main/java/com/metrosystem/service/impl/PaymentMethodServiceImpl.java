@@ -10,13 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metrosystem.dao.IBankAccountDao;
 import com.metrosystem.dao.ICreditCardDao;
+import com.metrosystem.dao.IDebitCardDao;
 import com.metrosystem.dao.IMetroUserDao;
 import com.metrosystem.dao.beans.BankAccountDTO;
 import com.metrosystem.dao.beans.CreditCardDTO;
+import com.metrosystem.dao.beans.DebitCardDTO;
 import com.metrosystem.dao.beans.MetroUserDTO;
 import com.metrosystem.service.IPaymentMethodService;
 import com.metrosystem.service.beans.BankAccountBO;
 import com.metrosystem.service.beans.CreditCardBO;
+import com.metrosystem.service.beans.DebitCardBO;
 import com.metrosystem.service.beans.MetroUserBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
 import com.metrosystem.service.utils.BankAccountBoDtoConverter;
@@ -32,6 +35,10 @@ public class PaymentMethodServiceImpl implements IPaymentMethodService{
 	@Autowired
 	@Qualifier("creditCardDao")
 	private ICreditCardDao creditCardDao;
+	
+	@Autowired
+	@Qualifier("debitCardDao")
+	private IDebitCardDao debitCardDao;
 	
 	@Autowired
 	@Qualifier("accountDao")
@@ -176,9 +183,20 @@ public class PaymentMethodServiceImpl implements IPaymentMethodService{
 	}
 
 	@Override
-	public void deleteCreditCard(String creditCardNumber)
-			throws MetroSystemServiceException {
-		// TODO Auto-generated method stub
+	@Transactional(readOnly=false,rollbackFor={Exception.class})
+	public void deleteCreditCard(String creditCardNumber) throws MetroSystemServiceException {
+				
+		try{
+			CreditCardDTO card = creditCardDao.queryCardByNumber(creditCardNumber);
+			if(card == null){
+				throw new IllegalArgumentException("No credit card exists with given number: " + creditCardNumber);
+			}
+			
+			creditCardDao.delete(card);
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
 
 	}
 
@@ -208,6 +226,158 @@ public class PaymentMethodServiceImpl implements IPaymentMethodService{
 			throw new MetroSystemServiceException(e);
 		}
 
+	}
+
+	@Override
+	public DebitCardBO findDebitCardByNumber(String debitCardNumber) throws MetroSystemServiceException {
+		
+		try{
+			DebitCardDTO cardDTO = debitCardDao.queryCardByNumber(debitCardNumber);
+			if(cardDTO== null){
+				return null;
+			}
+			
+			BankAccountDTO accountDTO = cardDTO.getAccount();
+			MetroUserDTO userDTO = accountDTO.getUser();
+			MetroUserBO userBO = userBoDtoConverter.dtoToBo(userDTO.getUserId(), 
+					                                        userDTO.getUniqueIdentifier(), 
+					                                        userDTO.getName());
+			
+			BankAccountBO accountBO = accountBoDtoConverter.
+					                   dtoToBoConverter(accountDTO.getAccountId(), 
+					                		            accountDTO.getAccountNumber(), 
+					                		            accountDTO.getBalance(), userBO);
+			
+			DebitCardBO cardBO = debitCardConverter.
+					                dtoToBo(cardDTO.getId(), 
+					                		cardDTO.getPaymentId(), 
+					                		cardDTO.getCvvNumber(), 
+					                		cardDTO.getExpiryMonth(), 
+					                		cardDTO.getExpiryYear(), 
+					                		accountBO);
+			
+			return cardBO;
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+	}
+
+	@Override
+	public List<DebitCardBO> findDebitCardsByUser(String userIdentifier) throws MetroSystemServiceException {
+		
+		try{
+		    MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
+		    if(userDTO == null){
+		    	throw new IllegalArgumentException("No user exists with given identifier: "+userIdentifier);
+		    }
+		    List<DebitCardDTO> cardDTOs = debitCardDao.queryCardsByUser(userIdentifier);
+		    List<DebitCardBO> cardBOs = new ArrayList<DebitCardBO>();
+		    if(cardDTOs == null || cardDTOs.size() ==0){
+		    	return cardBOs;
+		    }
+		    
+		    MetroUserBO userBO = userBoDtoConverter.dtoToBo(userDTO.getUserId(), 
+		    		                                        userDTO.getUniqueIdentifier(), 
+		    		                                        userDTO.getName());
+		    
+		    for(DebitCardDTO cardDTO : cardDTOs){
+		    	BankAccountDTO accountDTO = cardDTO.getAccount();
+		    	BankAccountBO accountBO = accountBoDtoConverter.
+		    			                   dtoToBoConverter(accountDTO.getAccountId(), 
+		    			                		            accountDTO.getAccountNumber(), 
+		    			                		            accountDTO.getBalance(), 
+		    			                		            userBO);
+		    	
+		    	DebitCardBO cardBO = debitCardConverter.dtoToBo(cardDTO.getId(), 
+		    			                                        cardDTO.getPaymentId(), 
+		    			                                        cardDTO.getCvvNumber(), 
+		    			                                        cardDTO.getExpiryMonth(), 
+		    			                                        cardDTO.getExpiryYear(), 
+		    			                                        accountBO);
+		    	
+		    	cardBOs.add(cardBO);
+		    }
+		    
+		    return cardBOs;
+		    
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+	}
+
+	@Override
+	public List<DebitCardBO> findDebitCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException {
+		
+		try{
+			BankAccountDTO accountDTO = accountDao.queryAccountByNumber(accountNumber);
+			if(accountDTO == null){
+				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
+			}
+			List<DebitCardDTO> cardDTOs = debitCardDao.queryCardByAccount(accountNumber);
+			List<DebitCardBO> cardBOs = new ArrayList<DebitCardBO>();
+			if(cardBOs == null || cardBOs.size() ==0){
+				return cardBOs;
+			}
+			
+			MetroUserDTO userDTO = accountDTO.getUser();
+			MetroUserBO userBO = userBoDtoConverter.dtoToBo(userDTO.getUserId(), 
+					                                        userDTO.getUniqueIdentifier(), 
+					                                        userDTO.getName());
+			BankAccountBO accountBO = accountBoDtoConverter.dtoToBoConverter(accountDTO.getAccountId(), 
+					                                                         accountDTO.getAccountNumber(), 
+					                                                         accountDTO.getBalance(), userBO);
+			
+			for(DebitCardDTO cardDTO : cardDTOs){
+				DebitCardBO cardBO = debitCardConverter.dtoToBo(cardDTO.getId(), 
+						                                        cardDTO.getPaymentId(), 
+						                                        cardDTO.getCvvNumber(), 
+						                                        cardDTO.getExpiryMonth(), 
+						                                        cardDTO.getExpiryYear(), 
+						                                        accountBO);
+				cardBOs.add(cardBO);
+			}
+			
+			return cardBOs;
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+	}
+
+	@Override
+	public void deleteDebitCard(String debitCardNumber) throws MetroSystemServiceException {
+		
+		try{
+			DebitCardDTO card = debitCardDao.queryCardByNumber(debitCardNumber);
+			if(card ==null){
+				throw new IllegalArgumentException("No debit card exists with given number: " + debitCardNumber);
+			}
+			debitCardDao.delete(card);
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+		
+	}
+
+	@Override
+	public Integer createDebitCard(DebitCardBO debitCard, String accountNumber) throws MetroSystemServiceException {
+		
+		try{
+			BankAccountDTO account = accountDao.queryAccountByNumber(accountNumber);
+			if(account == null){
+				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
+			}
+			DebitCardDTO cardDTO = debitCardConverter.boToDto(null, debitCard.getPaymentId(), debitCard.getCvvNumber(), 
+					                                          debitCard.getExpiryMonth(), debitCard.getExpiryYear(), account);
+			
+			return debitCardDao.save(cardDTO);
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
 	}
 
 }
