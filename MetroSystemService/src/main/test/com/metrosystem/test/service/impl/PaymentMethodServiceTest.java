@@ -11,6 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.metrosystem.service.IPaymentMethodService;
 import com.metrosystem.service.beans.CreditCardBO;
+import com.metrosystem.service.beans.DebitCardBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
 
 public class PaymentMethodServiceTest {
@@ -94,6 +95,71 @@ public class PaymentMethodServiceTest {
 		
 		try{
 			paymentService.deleteCreditCard("1889 87656 123 456");
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void createDebitCard(){
+		
+		try{
+			DebitCardBO card = new DebitCardBO("1456-789-0123-6574", 223, "12", "2014", null);
+			Integer id = paymentService.createDebitCard(card, "12323232332323");
+			assertTrue(id != null);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void findDebitCardByNumber(){
+		
+		try{
+			DebitCardBO card = paymentService.findDebitCardByNumber("1456-789-0123-6574");
+			assertTrue(card != null);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void findDebitCardsByUser(){
+		
+		try{
+			List<DebitCardBO> cards = paymentService.findDebitCardsByUser("mugloorahul");
+			assertTrue(cards != null && cards.size() > 0);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void findDebitCardsByAccountNumber(){
+		
+		try{
+			List<DebitCardBO> cards = paymentService.findDebitCardsByAccountNumber("12323232332323");
+			assertTrue(cards != null && cards.size() > 0);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void deleteDebitCard(){
+		
+		try{
+			paymentService.deleteDebitCard("1456-789-0123-6574");
 		}
 		catch(MetroSystemServiceException e){
 			e.printStackTrace();
