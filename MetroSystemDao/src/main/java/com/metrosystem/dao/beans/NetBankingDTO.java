@@ -5,9 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.SQLDelete;
+
 @Entity
 @Table(name="net_banking_payment")
 @PrimaryKeyJoinColumn(name="pay_method_id")
+@SQLDelete(sql="UPDATE payment_method SET deleted = 'Y' WHERE id=?")
 public class NetBankingDTO extends PaymentMethodDTO{
 
 	/**
