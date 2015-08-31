@@ -13,7 +13,6 @@ import com.metrosystem.service.IBankService;
 import com.metrosystem.service.beans.BankAccountBO;
 import com.metrosystem.service.beans.CreditCardBO;
 import com.metrosystem.service.beans.DebitCardBO;
-import com.metrosystem.service.beans.NetBankingBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
 
 public class BankServiceTest {
@@ -229,70 +228,5 @@ public class BankServiceTest {
 			e.printStackTrace();
 			assertTrue(false);
 		}
-	}
-	
-	@Test
-	public void activateNetBanking(){
-		
-		try{
-			NetBankingBO bo = new NetBankingBO("mugloorahul", "test123", null);
-			Integer id = bankService.activateNetBanking(bo, "12323232332323");
-			assertTrue(id != null);
-		}
-		catch(MetroSystemServiceException e){
-			e.printStackTrace();
-			assertTrue(false);
-		}
-	}
-	
-	@Test
-	public void deactivateNetBanking(){
-		
-		try{
-			bankService.deactivateNetBanking("mugloorahul");
-		}
-		catch(MetroSystemServiceException e){
-			e.printStackTrace();
-			assertTrue(false);
-		}
-	}
-	
-	@Test
-	public void findNetBankingByCustomerId(){
-		
-		try{
-			NetBankingBO nb = bankService.findNetBankingByCustomerId("mugloorahul");
-			assertTrue(nb != null);
-		}
-		catch(MetroSystemServiceException e){
-			e.printStackTrace();
-			assertTrue(false);
-		}
-	}
-	
-	@Test
-	public void findNetBankingByAccount(){
-		
-		try{
-			NetBankingBO nb = bankService.findNetBankingByAccount("12323232332323");
-			assertTrue(nb != null);
-		}
-		catch(MetroSystemServiceException e){
-			e.printStackTrace();
-			assertTrue(false);
-		}
-	}
-	
-	@Test
-	public void findNetBankingByUser(){
-		
-		try{
-			List<NetBankingBO> nbBOs = bankService.findNetBankingByUser("mugloorahul");
-			assertTrue(nbBOs != null && nbBOs.size() > 0);
-		}
-		catch(MetroSystemServiceException e){
-			e.printStackTrace();
-			assertTrue(false);
-		}
-	}
+	}	
 }
