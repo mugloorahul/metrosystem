@@ -347,6 +347,7 @@ public class PaymentMethodServiceImpl implements IPaymentMethodService{
 	}
 
 	@Override
+	@Transactional(readOnly=false,rollbackFor={Exception.class})
 	public void deleteDebitCard(String debitCardNumber) throws MetroSystemServiceException {
 		
 		try{
@@ -363,6 +364,7 @@ public class PaymentMethodServiceImpl implements IPaymentMethodService{
 	}
 
 	@Override
+	@Transactional(readOnly=false,rollbackFor={Exception.class})
 	public Integer createDebitCard(DebitCardBO debitCard, String accountNumber) throws MetroSystemServiceException {
 		
 		try{
