@@ -3,11 +3,16 @@ package com.metrosystem.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.metrosystem.dao.IDebitCardDao;
 import com.metrosystem.dao.beans.BankAccountDTO;
 import com.metrosystem.dao.beans.DebitCardDTO;
 import com.metrosystem.dao.exception.MetroSystemDaoException;
 
+@Repository("debitCardDao")
+@Transactional(readOnly=true,rollbackFor={Exception.class})
 public class DebitCardDaoImpl extends MetroSystemDaoImpl<Integer, DebitCardDTO> implements 
      IDebitCardDao {
 
