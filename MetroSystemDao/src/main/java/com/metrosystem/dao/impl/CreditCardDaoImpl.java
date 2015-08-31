@@ -23,9 +23,9 @@ public class CreditCardDaoImpl extends MetroSystemDaoImpl<Integer, CreditCardDTO
     public CreditCardDTO queryCardByNumber(String cardNumber) throws MetroSystemDaoException{
     	
     	try{
-    		String query = "FROM CreditCardDTO WHERE paymentId =? ";
+    		String query = "FROM CreditCardDTO WHERE paymentId =? and deleted != ? ";
     		
-    		List<CreditCardDTO> cards = this.queryListOfEntities(query, cardNumber);
+    		List<CreditCardDTO> cards = this.queryListOfEntities(query, cardNumber,"Y");
     		if(cards == null || cards.size() == 0){
     			return null;
     		}
@@ -44,9 +44,11 @@ public class CreditCardDaoImpl extends MetroSystemDaoImpl<Integer, CreditCardDTO
 		                   " FROM CreditCardDTO pay" +
 					       " INNER JOIN pay.account account"+
 		                   " INNER JOIN account.user user " +
-					       " WHERE user.uniqueIdentifier = ?";
+					       " WHERE user.uniqueIdentifier = ?" +
+		                   "   AND account.deleted != ?" +
+					       "   AND pay.deleted != ?";
 			
-			 List<?> result= this.queryListOfEntities(query, userIdentifier);
+			 List<?> result= this.queryListOfEntities(query, userIdentifier,"Y","Y");
 			 
 			 List<CreditCardDTO> cards = new ArrayList<CreditCardDTO>();
 			 for(int i =0; i < result.size(); i++){
@@ -67,9 +69,9 @@ public class CreditCardDaoImpl extends MetroSystemDaoImpl<Integer, CreditCardDTO
 		
 		try{
 			String query = "FROM CreditCardDTO pay" +
-	                       " WHERE pay.account.accountNumber= ? " ;
+	                       " WHERE pay.account.accountNumber= ? and deleted != ?" ;
 		
-		    return this.queryListOfEntities(query, accountNumber);
+		    return this.queryListOfEntities(query, accountNumber,"Y");
 		}
 		catch(Throwable e){
     		throw new MetroSystemDaoException(e);

@@ -24,9 +24,10 @@ implements IBankAccountDao {
 		
 		try{
 			String query = "SELECT account FROM BankAccountDTO account " +
-		                   " WHERE account.user.uniqueIdentifier = ?";
+		                   " WHERE account.user.uniqueIdentifier = ? " +
+					       "  AND account.deleted != ?";
 			
-			return this.queryListOfEntities(query, userIdentifier);
+			return this.queryListOfEntities(query, userIdentifier,"Y");
 		}
 		catch(Throwable e){
 			throw new MetroSystemDaoException(e);
@@ -37,8 +38,8 @@ implements IBankAccountDao {
 	public BankAccountDTO queryAccountByNumber(String accountNumber) throws MetroSystemDaoException {
 		
 		try{
-			String query = "FROM BankAccountDTO where accountNumber = ?";
-			List<BankAccountDTO> accounts = this.queryListOfEntities(query, accountNumber);
+			String query = "FROM BankAccountDTO where accountNumber = ? AND deleted != ?";
+			List<BankAccountDTO> accounts = this.queryListOfEntities(query, accountNumber,"Y");
 			if(accounts == null || accounts.size() == 0){
 				return null;
 			}

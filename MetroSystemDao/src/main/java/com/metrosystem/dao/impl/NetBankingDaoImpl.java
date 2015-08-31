@@ -24,9 +24,9 @@ public class NetBankingDaoImpl extends MetroSystemDaoImpl<Integer, NetBankingDTO
 		
     	
     	try{
-    		String query = "FROM NetBankingDTO WHERE paymentId =? ";
+    		String query = "FROM NetBankingDTO WHERE paymentId =? AND deleted != ?";
     		
-    		List<NetBankingDTO> cards = this.queryListOfEntities(query, customerId);
+    		List<NetBankingDTO> cards = this.queryListOfEntities(query, customerId,"Y");
     		if(cards == null || cards.size() == 0){
     			return null;
     		}
@@ -46,9 +46,11 @@ public class NetBankingDaoImpl extends MetroSystemDaoImpl<Integer, NetBankingDTO
 		                   " FROM NetBankingDTO pay" +
 					       " INNER JOIN pay.account account"+
 		                   " INNER JOIN account.user user " +
-					       " WHERE user.uniqueIdentifier = ?";
+					       " WHERE user.uniqueIdentifier = ?"+
+		                   "   AND account.deleted != ?"+
+					       "   AND pay.deleted != ?";
 			
-			 List<?> result= this.queryListOfEntities(query, userIdentifier);
+			 List<?> result= this.queryListOfEntities(query, userIdentifier,"Y","Y");
 			 
 			 List<NetBankingDTO> list = new ArrayList<NetBankingDTO>();
 			 for(int i =0; i < result.size(); i++){
@@ -69,9 +71,9 @@ public class NetBankingDaoImpl extends MetroSystemDaoImpl<Integer, NetBankingDTO
 		
 		try{
 			String query = "FROM NetBankingDTO pay" +
-                           " WHERE pay.account.accountNumber= ? " ;
+                           " WHERE pay.account.accountNumber= ? AND deleted != ?" ;
 			
-    		List<NetBankingDTO> cards = this.queryListOfEntities(query, accountNumber);
+    		List<NetBankingDTO> cards = this.queryListOfEntities(query, accountNumber,"Y");
     		if(cards == null || cards.size() == 0){
     			return null;
     		}
