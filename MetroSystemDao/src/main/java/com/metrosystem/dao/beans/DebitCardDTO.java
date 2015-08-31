@@ -1,17 +1,16 @@
 package com.metrosystem.dao.beans;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.SQLDelete;
 
 
 @Entity
 @Table(name="debit_card_payment")
 @PrimaryKeyJoinColumn(name="pay_method_id")
-@SQLDelete(sql="UPDATE payment_method SET deleted = 'Y' WHERE id=?")
+@DiscriminatorValue(value="DD")
 public class DebitCardDTO extends PaymentMethodDTO{
 
 	/**
