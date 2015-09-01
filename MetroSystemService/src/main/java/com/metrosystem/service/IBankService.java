@@ -13,9 +13,9 @@ public interface IBankService {
 	public Integer openBankAccount(String accountNumber, double balance, String userIdentifier)
 	throws MetroSystemServiceException;
 	
-	public List<BankAccountBO> getBankAccountsForUser(String userIdentifier)throws  MetroSystemServiceException;
+	public List<BankAccountBO> getActiveBankAccountsForUser(String userIdentifier)throws  MetroSystemServiceException;
 	
-	public BankAccountBO findAccountByNumber(String accountNumber) throws MetroSystemServiceException;
+	public BankAccountBO findActiveBankAccountByNumber(String accountNumber) throws MetroSystemServiceException;
 	
 	public void closeBankAccount(String accountNumber) throws MetroSystemServiceException;
 	
