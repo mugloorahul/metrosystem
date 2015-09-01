@@ -48,6 +48,19 @@ public class MetroCardServiceTest {
 	}
 	
 	@Test
+	public void createDuplicateCard(){
+		try{
+			Integer cardId = cardService.createMetroCard("134",200, "mugloorahul");
+			assertTrue(cardId != null);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+			
+		}
+	}
+	
+	@Test
 	public void createMultipleCards(){
 		try{
 			for(int i =1; i <=3; i++){
