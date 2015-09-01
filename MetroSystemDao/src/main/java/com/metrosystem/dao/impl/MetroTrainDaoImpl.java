@@ -37,7 +37,6 @@ implements IMetroTrainDao{
 		try{
 			String query = " SELECT train " +
 					       " FROM MetroTrainDTO train " +
-		                   " LEFT OUTER JOIN train.route route " +
 		                   " WHERE train.name = ?";
 			List<MetroTrainDTO> trains = this.queryListOfEntities(query, trainName);
 			
@@ -58,7 +57,6 @@ implements IMetroTrainDao{
 		try{
 			String query = " SELECT train " +
 				       " FROM MetroTrainDTO train " +
-	                   " LEFT OUTER JOIN train.route route " +
 	                   " WHERE train.trainNumber = ?";
 			List<MetroTrainDTO> trains = this.queryListOfEntities(query, trainNumber);
 			if(trains == null || trains.size() == 0){
