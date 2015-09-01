@@ -83,6 +83,12 @@ public class BankServiceImpl implements IBankService {
 	throws MetroSystemServiceException {
 		
 		try{
+			//Check if bank account  with given number exists
+			BankAccountDTO existingAccount = accountDao.queryAccountByNumber(accountNumber);
+			if(existingAccount != null){
+				throw new IllegalArgumentException("Bank account with given number" + accountNumber + " already exists.");
+			}
+			
 			MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
 			if(userDTO == null){
 				throw new IllegalArgumentException("No user exists with given identifier: " + userIdentifier);
@@ -306,7 +312,12 @@ public class BankServiceImpl implements IBankService {
 			if(accountDTO == null){
 				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
 			}
-						
+			//Check if credit card with given number exists
+			CreditCardDTO existingCard = creditCardDao.queryCardByNumber(creditCard.getPaymentId());
+			if(existingCard != null){
+				throw new IllegalArgumentException("Credit card with number " + creditCard.getPaymentId() + " already exists.");
+			}
+			
 			CreditCardDTO cardDTO = creditCardConverter.
 					                   boToDto(null, 
 					                		   creditCard.getPaymentId(), 
@@ -468,6 +479,11 @@ public class BankServiceImpl implements IBankService {
 			if(account == null){
 				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
 			}
+			
+			DebitCardDTO existingCard = debitCardDao.queryCardByNumber(debitCard.getPaymentId());
+			if(existingCard != null){
+				throw new IllegalArgumentException("Debit card with number " + debitCard.getPaymentId() + " already exists.");
+			}
 			DebitCardDTO cardDTO = debitCardConverter.boToDto(null, debitCard.getPaymentId(), debitCard.getCvvNumber(), 
 					                                          debitCard.getExpiryMonth(), debitCard.getExpiryYear(), account);
 			
@@ -486,6 +502,11 @@ public class BankServiceImpl implements IBankService {
 			BankAccountDTO account = accountDao.queryAccountByNumber(accountNumber);
 			if(account == null){
 				throw new IllegalArgumentException("No bank account exists with given number: " + accountNumber);
+			}
+			//Check if customer id already exists
+			NetBankingDTO existingNB = netBankingDao.queryByCustomerId(netBanking.getPaymentId());
+			if(existingNB != null){
+				throw new IllegalArgumentException("Customer id " + netBanking.getPaymentId() + " already exists");
 			}
 			
 			NetBankingDTO dto = netBankingConverter.boToDto(null, netBanking.getPaymentId(), netBanking.getPassword(), account);
