@@ -39,6 +39,12 @@ public class RouteServiceImpl implements IRouteService {
 	public Integer createRoute(String routeName) throws MetroSystemServiceException {
 	
 		try{
+			//Check if route with this name already exists
+			RouteDTO existingRoute = routeDao.queryRouteByName(routeName);
+			if(existingRoute != null){
+				throw new IllegalArgumentException("Route with name " + routeName + " already exists.");
+			}
+			
 			return (Integer)routeDao.save(routeBoDtoConverter.boToDto(null, routeName));
 		}
 		catch(Throwable e){
