@@ -84,7 +84,7 @@ public class BankServiceImpl implements IBankService {
 		
 		try{
 			//Check if bank account  with given number exists
-			BankAccountDTO existingAccount = accountDao.queryAccountByNumber(accountNumber);
+			BankAccountDTO existingAccount = accountDao.queryBankAccountByNumber(accountNumber);
 			if(existingAccount != null){
 				throw new IllegalArgumentException("Bank account with given number" + accountNumber + " already exists.");
 			}
@@ -103,7 +103,7 @@ public class BankServiceImpl implements IBankService {
 	}
 
 	@Override
-	public List<BankAccountBO> getBankAccountsForUser(String userIdentifier) throws MetroSystemServiceException{
+	public List<BankAccountBO> getActiveBankAccountsForUser(String userIdentifier) throws MetroSystemServiceException{
 		try{
 			MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
 			if(userDTO == null){
@@ -130,10 +130,10 @@ public class BankServiceImpl implements IBankService {
 	}
 
 	@Override
-	public BankAccountBO findAccountByNumber(String accountNumber) throws MetroSystemServiceException {
+	public BankAccountBO findActiveBankAccountByNumber(String accountNumber) throws MetroSystemServiceException {
 		
 		try{
-			BankAccountDTO accountDTO = accountDao.queryAccountByNumber(accountNumber);
+			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
 			if(accountDTO == null){
 				return null;
 			}
@@ -157,7 +157,7 @@ public class BankServiceImpl implements IBankService {
 	public void closeBankAccount(String accountNumber) throws MetroSystemServiceException {
 		
 		try{
-			BankAccountDTO account = accountDao.queryAccountByNumber(accountNumber);
+			BankAccountDTO account = accountDao.queryBankAccountByNumber(accountNumber);
 			if(account == null){
 				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
 			}
@@ -250,7 +250,7 @@ public class BankServiceImpl implements IBankService {
 	public List<CreditCardBO> findCreditCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException {
 		
 		try{
-			BankAccountDTO accountDTO = accountDao.queryAccountByNumber(accountNumber);
+			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
 			if(accountDTO == null){
 				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
 			}
@@ -308,7 +308,7 @@ public class BankServiceImpl implements IBankService {
 		
 		
 		try{
-			BankAccountDTO accountDTO = accountDao.queryAccountByNumber(accountNumber);
+			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
 			if(accountDTO == null){
 				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
 			}
@@ -418,7 +418,7 @@ public class BankServiceImpl implements IBankService {
 	public List<DebitCardBO> findDebitCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException {
 		
 		try{
-			BankAccountDTO accountDTO = accountDao.queryAccountByNumber(accountNumber);
+			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
 			if(accountDTO == null){
 				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
 			}
@@ -475,7 +475,7 @@ public class BankServiceImpl implements IBankService {
 	public Integer createDebitCard(DebitCardBO debitCard, String accountNumber) throws MetroSystemServiceException {
 		
 		try{
-			BankAccountDTO account = accountDao.queryAccountByNumber(accountNumber);
+			BankAccountDTO account = accountDao.queryBankAccountByNumber(accountNumber);
 			if(account == null){
 				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
 			}
@@ -499,7 +499,7 @@ public class BankServiceImpl implements IBankService {
 	public Integer activateNetBanking(NetBankingBO netBanking,String accountNumber) throws MetroSystemServiceException {
 		
 		try{
-			BankAccountDTO account = accountDao.queryAccountByNumber(accountNumber);
+			BankAccountDTO account = accountDao.queryBankAccountByNumber(accountNumber);
 			if(account == null){
 				throw new IllegalArgumentException("No bank account exists with given number: " + accountNumber);
 			}
@@ -570,7 +570,7 @@ public class BankServiceImpl implements IBankService {
 	public NetBankingBO findNetBankingByAccount(String accountNumber) throws MetroSystemServiceException {
 		
 		try{
-			BankAccountDTO accountDTO = accountDao.queryAccountByNumber(accountNumber);
+			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
 			if(accountDTO == null){
 				throw new IllegalArgumentException("No bank account exists with given number: " + accountNumber);
 			}
