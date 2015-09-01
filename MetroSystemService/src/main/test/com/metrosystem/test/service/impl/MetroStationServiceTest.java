@@ -84,6 +84,18 @@ public class MetroStationServiceTest {
 	}
 	
 	@Test
+	public void addStationToRouteWithDuplicateSequence(){
+		try{
+			//MetroStationBO station = stationService.findStationByName("Jammu");
+			stationService.addStationToRoute("Jammu", "Jammu to Pune", 1);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
 	public void getStationsForRoute(){
 		try{
 			List<MetroStationBO> stations = stationService.getStationsForRoute("Jammu to Pune");
