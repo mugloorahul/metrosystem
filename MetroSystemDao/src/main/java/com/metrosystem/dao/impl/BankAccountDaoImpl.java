@@ -20,7 +20,7 @@ implements IBankAccountDao {
 	}
 
 	@Override
-	public List<BankAccountDTO> queryBankAccountsForUser(String userIdentifier) throws MetroSystemDaoException {
+	public List<BankAccountDTO> queryActiveBankAccountsForUser(String userIdentifier) throws MetroSystemDaoException {
 		
 		try{
 			String query = "SELECT account FROM BankAccountDTO account " +
@@ -35,11 +35,42 @@ implements IBankAccountDao {
 	}
 
 	@Override
-	public BankAccountDTO queryAccountByNumber(String accountNumber) throws MetroSystemDaoException {
+	public BankAccountDTO queryActiveBankAccountByNumber(String accountNumber) throws MetroSystemDaoException {
 		
 		try{
 			String query = "FROM BankAccountDTO where accountNumber = ? AND deleted != ?";
 			List<BankAccountDTO> accounts = this.queryListOfEntities(query, accountNumber,"Y");
+			if(accounts == null || accounts.size() == 0){
+				return null;
+			}
+			
+			return accounts.get(0);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+	
+	@Override
+	public List<BankAccountDTO> queryBankAccountsForUser(String userIdentifier) throws MetroSystemDaoException {
+		
+		try{
+			String query = "SELECT account FROM BankAccountDTO account " +
+		                   " WHERE account.user.uniqueIdentifier = ? ";
+			
+			return this.queryListOfEntities(query, userIdentifier);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+
+	@Override
+	public BankAccountDTO queryBankAccountByNumber(String accountNumber) throws MetroSystemDaoException {
+		
+		try{
+			String query = "FROM BankAccountDTO where accountNumber = ?";
+			List<BankAccountDTO> accounts = this.queryListOfEntities(query, accountNumber);
 			if(accounts == null || accounts.size() == 0){
 				return null;
 			}
