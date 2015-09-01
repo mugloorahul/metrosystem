@@ -171,7 +171,7 @@ public class BankServiceImpl implements IBankService {
 	
 	
 	@Override
-	public CreditCardBO findCreditCardByNumber(String creditCardNumber) throws MetroSystemServiceException {
+	public CreditCardBO findActiveCreditCardByNumber(String creditCardNumber) throws MetroSystemServiceException {
 		
 		try{
 			CreditCardDTO cardDTO = creditCardDao.queryCardByNumber(creditCardNumber);
@@ -207,7 +207,7 @@ public class BankServiceImpl implements IBankService {
 	}
 
 	@Override
-	public List<CreditCardBO> findCreditCardsByUser(String userIdentifier) throws MetroSystemServiceException {
+	public List<CreditCardBO> findActiveCreditCardsByUser(String userIdentifier) throws MetroSystemServiceException {
 		
 		try{
 			MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
@@ -247,7 +247,7 @@ public class BankServiceImpl implements IBankService {
 	}
 
 	@Override
-	public List<CreditCardBO> findCreditCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException {
+	public List<CreditCardBO> findActiveCreditCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException {
 		
 		try{
 			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
@@ -255,7 +255,7 @@ public class BankServiceImpl implements IBankService {
 				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
 			}
 			
-			List<CreditCardDTO> cardDTOs = creditCardDao.queryCardByAccount(accountNumber);
+			List<CreditCardDTO> cardDTOs = creditCardDao.queryCardsByAccount(accountNumber);
 			
 			List<CreditCardBO> cardBOs = new ArrayList<CreditCardBO>();
 			if(cardDTOs == null || cardDTOs.size() == 0){
@@ -336,7 +336,7 @@ public class BankServiceImpl implements IBankService {
 	}
 
 	@Override
-	public DebitCardBO findDebitCardByNumber(String debitCardNumber) throws MetroSystemServiceException {
+	public DebitCardBO findActiveDebitCardByNumber(String debitCardNumber) throws MetroSystemServiceException {
 		
 		try{
 			DebitCardDTO cardDTO = debitCardDao.queryCardByNumber(debitCardNumber);
@@ -371,7 +371,7 @@ public class BankServiceImpl implements IBankService {
 	}
 
 	@Override
-	public List<DebitCardBO> findDebitCardsByUser(String userIdentifier) throws MetroSystemServiceException {
+	public List<DebitCardBO> findActiveDebitCardsByUser(String userIdentifier) throws MetroSystemServiceException {
 		
 		try{
 		    MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
@@ -415,14 +415,14 @@ public class BankServiceImpl implements IBankService {
 	}
 
 	@Override
-	public List<DebitCardBO> findDebitCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException {
+	public List<DebitCardBO> findActiveDebitCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException {
 		
 		try{
 			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
 			if(accountDTO == null){
 				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
 			}
-			List<DebitCardDTO> cardDTOs = debitCardDao.queryCardByAccount(accountNumber);
+			List<DebitCardDTO> cardDTOs = debitCardDao.queryCardsByAccount(accountNumber);
 			List<DebitCardBO> cardBOs = new ArrayList<DebitCardBO>();
 			if(cardBOs == null || cardBOs.size() ==0){
 				return cardBOs;
@@ -537,7 +537,7 @@ public class BankServiceImpl implements IBankService {
 	}
 
 	@Override
-	public NetBankingBO findNetBankingByCustomerId(String customerId) throws MetroSystemServiceException {
+	public NetBankingBO findActiveNetBankingByCustomerId(String customerId) throws MetroSystemServiceException {
 		
 		try{
 			NetBankingDTO nbDTO = netBankingDao.queryByCustomerId(customerId);
@@ -567,7 +567,7 @@ public class BankServiceImpl implements IBankService {
 	}
 
 	@Override
-	public NetBankingBO findNetBankingByAccount(String accountNumber) throws MetroSystemServiceException {
+	public NetBankingBO findActiveNetBankingByAccount(String accountNumber) throws MetroSystemServiceException {
 		
 		try{
 			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
@@ -600,7 +600,7 @@ public class BankServiceImpl implements IBankService {
 	}
 
 	@Override
-	public List<NetBankingBO> findNetBankingByUser(String userIdentifier) throws MetroSystemServiceException {
+	public List<NetBankingBO> findActiveNetBankingByUser(String userIdentifier) throws MetroSystemServiceException {
 		
 		try{
 			MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
