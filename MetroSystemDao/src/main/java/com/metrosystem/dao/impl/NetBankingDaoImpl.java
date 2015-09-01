@@ -71,9 +71,10 @@ public class NetBankingDaoImpl extends MetroSystemDaoImpl<Integer, NetBankingDTO
 		
 		try{
 			String query = "FROM NetBankingDTO pay" +
-                           " WHERE pay.account.accountNumber= ? AND deleted != ?" ;
+                           " WHERE pay.account.accountNumber= ? AND deleted != ?" +
+					       "   AND pay.account.deleted != ?";
 			
-    		List<NetBankingDTO> cards = this.queryListOfEntities(query, accountNumber,"Y");
+    		List<NetBankingDTO> cards = this.queryListOfEntities(query, accountNumber,"Y","Y");
     		if(cards == null || cards.size() == 0){
     			return null;
     		}
