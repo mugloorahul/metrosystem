@@ -51,6 +51,13 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 				throw new IllegalArgumentException("No route found with given name: " + routeName);
 			}
 			
+			//Check if train with given number exists
+			MetroTrainDTO existingTrain = trainDao.queryTrainByNumber(trainNumber);
+			if(existingTrain != null){
+				throw new IllegalAccessException("Train with number " + trainNumber + " already exists.");
+			}
+			
+			
 			MetroTrainDTO trainDTO = trainBoDtoConverter.boToDto(trainNumber, routeName, routeDTO);
 			
 			return trainDao.save(trainDTO);
@@ -68,6 +75,12 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 	public Integer createTrain(int trainNumber, String name) throws MetroSystemServiceException {
 		
 		try{
+			//Check if train with given number exists
+			MetroTrainDTO existingTrain = trainDao.queryTrainByNumber(trainNumber);
+			if(existingTrain != null){
+				throw new IllegalAccessException("Train with number " + trainNumber + " already exists.");
+			}
+			
 			MetroTrainDTO trainDTO = trainBoDtoConverter.boToDto(trainNumber, name, null);
 			
 			return trainDao.save(trainDTO);
