@@ -33,7 +33,7 @@ public class RouteServiceTest {
 	@Test
 	public void createRoute(){
 		try{
-           Integer routeId = routeService.createRoute("Jammu to Pune");	
+           Integer routeId = routeService.createRoute("Pune to Delhi");	
            assertTrue(routeId != null);
 		}
 		catch(Exception e){
@@ -41,6 +41,19 @@ public class RouteServiceTest {
 			assertTrue(false);
 		}
 	}
+	
+	@Test
+	public void createDuplicateRoute(){
+		try{
+           Integer routeId = routeService.createRoute("Pune to Delhi");	
+           assertTrue(routeId != null);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
 	
 	@Test
 	public void findRouteByName(){
