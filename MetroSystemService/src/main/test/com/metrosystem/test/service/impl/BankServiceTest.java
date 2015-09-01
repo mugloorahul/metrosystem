@@ -147,7 +147,7 @@ public class BankServiceTest {
 	public void findCreditCardByNumber(){
 		
 		try{
-			CreditCardBO card = bankService.findCreditCardByNumber("1889 87656 123 456");
+			CreditCardBO card = bankService.findActiveCreditCardByNumber("1889 87656 123 456");
 			assertTrue(card != null);
 		}
 		catch(MetroSystemServiceException e){
@@ -160,7 +160,7 @@ public class BankServiceTest {
 	public void findCreditCardsByAccountNumber(){
 		
 		try{
-			List<CreditCardBO> cards = bankService.findCreditCardsByAccountNumber("12323232332323");
+			List<CreditCardBO> cards = bankService.findActiveCreditCardsByAccountNumber("12323232332323");
 			assertTrue(cards != null && cards.size() > 0);
 		}
 		catch(MetroSystemServiceException e){
@@ -173,7 +173,7 @@ public class BankServiceTest {
 	public void findCreditCardsByUser(){
 		
 		try{
-			List<CreditCardBO> cards = bankService.findCreditCardsByUser("mugloorahul");
+			List<CreditCardBO> cards = bankService.findActiveCreditCardsByUser("mugloorahul");
 			assertTrue(cards != null && cards.size() > 0);
 		}
 		catch(MetroSystemServiceException e){
@@ -226,7 +226,7 @@ public class BankServiceTest {
 	public void findDebitCardByNumber(){
 		
 		try{
-			DebitCardBO card = bankService.findDebitCardByNumber("1456-789-0123-6574");
+			DebitCardBO card = bankService.findActiveDebitCardByNumber("1456-789-0123-6574");
 			assertTrue(card != null);
 		}
 		catch(MetroSystemServiceException e){
@@ -239,7 +239,7 @@ public class BankServiceTest {
 	public void findDebitCardsByUser(){
 		
 		try{
-			List<DebitCardBO> cards = bankService.findDebitCardsByUser("mugloorahul");
+			List<DebitCardBO> cards = bankService.findActiveDebitCardsByUser("mugloorahul");
 			assertTrue(cards != null && cards.size() > 0);
 		}
 		catch(MetroSystemServiceException e){
@@ -252,7 +252,7 @@ public class BankServiceTest {
 	public void findDebitCardsByAccountNumber(){
 		
 		try{
-			List<DebitCardBO> cards = bankService.findDebitCardsByAccountNumber("12323232332323");
+			List<DebitCardBO> cards = bankService.findActiveDebitCardsByAccountNumber("12323232332323");
 			assertTrue(cards != null && cards.size() > 0);
 		}
 		catch(MetroSystemServiceException e){
@@ -317,7 +317,7 @@ public class BankServiceTest {
 	public void findNetBankingByCustomerId(){
 		
 		try{
-			NetBankingBO nb = bankService.findNetBankingByCustomerId("mugloorahul");
+			NetBankingBO nb = bankService.findActiveNetBankingByCustomerId("mugloorahul");
 			assertTrue(nb != null);
 		}
 		catch(MetroSystemServiceException e){
@@ -330,7 +330,7 @@ public class BankServiceTest {
 	public void findNetBankingByAccount(){
 		
 		try{
-			NetBankingBO nb = bankService.findNetBankingByAccount("12323232332323");
+			NetBankingBO nb = bankService.findActiveNetBankingByAccount("12323232332323");
 			assertTrue(nb != null);
 		}
 		catch(MetroSystemServiceException e){
@@ -343,7 +343,7 @@ public class BankServiceTest {
 	public void findNetBankingByUser(){
 		
 		try{
-			List<NetBankingBO> nbBOs = bankService.findNetBankingByUser("mugloorahul");
+			List<NetBankingBO> nbBOs = bankService.findActiveNetBankingByUser("mugloorahul");
 			assertTrue(nbBOs != null && nbBOs.size() > 0);
 		}
 		catch(MetroSystemServiceException e){
