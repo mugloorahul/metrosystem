@@ -36,7 +36,19 @@ public class MetroStationServiceTest {
 	}
 	
 	@Test
-	public void saveStation(){
+	public void createStation(){
+		try{
+			Integer id = stationService.createStation("Jammu", "33.6", "40.1");
+			assertTrue(id != null);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void createDuplicateStation(){
 		try{
 			Integer id = stationService.createStation("Jammu", "33.6", "40.1");
 			assertTrue(id != null);
