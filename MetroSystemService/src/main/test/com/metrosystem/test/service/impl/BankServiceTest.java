@@ -79,7 +79,7 @@ public class BankServiceTest {
 	@Test
 	public void findAccountsForUser(){
 		try{
-			List<BankAccountBO> accounts = bankService.getBankAccountsForUser("mugloorahul");
+			List<BankAccountBO> accounts = bankService.getActiveBankAccountsForUser("mugloorahul");
 			assertTrue(accounts != null && accounts.size() > 0);
 		}
 		catch(MetroSystemServiceException e){
@@ -91,7 +91,7 @@ public class BankServiceTest {
 	@Test
 	public void findAccountByNumber(){
 		try{
-			BankAccountBO account = bankService.findAccountByNumber("12323232332323");
+			BankAccountBO account = bankService.findActiveBankAccountByNumber("12323232332323");
 			assertTrue(account != null);
 		}
 		catch(MetroSystemServiceException e){
