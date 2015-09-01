@@ -2,20 +2,6 @@ package com.metrosystem.test.service.impl;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.metrosystem.service.IBankService;
-import com.metrosystem.service.beans.BankAccountBO;
-import com.metrosystem.service.beans.CreditCardBO;
-import com.metrosystem.service.beans.DebitCardBO;
-import com.metrosystem.service.beans.NetBankingBO;
-import com.metrosystem.service.exception.MetroSystemServiceException;
-
 public class BankServiceTest {
 
 	private static IBankService bankService; 
@@ -77,7 +63,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findAccountsForUser(){
+	public void findActiveBankAccountsForUser(){
 		try{
 			List<BankAccountBO> accounts = bankService.getActiveBankAccountsForUser("mugloorahul");
 			assertTrue(accounts != null && accounts.size() > 0);
@@ -89,7 +75,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findAccountByNumber(){
+	public void findActiveBankAccountByNumber(){
 		try{
 			BankAccountBO account = bankService.findActiveBankAccountByNumber("12323232332323");
 			assertTrue(account != null);
@@ -144,7 +130,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findCreditCardByNumber(){
+	public void findActiveCreditCardByNumber(){
 		
 		try{
 			CreditCardBO card = bankService.findActiveCreditCardByNumber("1889 87656 123 456");
@@ -157,7 +143,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findCreditCardsByAccountNumber(){
+	public void findActiveCreditCardsByAccountNumber(){
 		
 		try{
 			List<CreditCardBO> cards = bankService.findActiveCreditCardsByAccountNumber("12323232332323");
@@ -170,7 +156,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findCreditCardsByUser(){
+	public void findActiveCreditCardsByUser(){
 		
 		try{
 			List<CreditCardBO> cards = bankService.findActiveCreditCardsByUser("mugloorahul");
@@ -223,7 +209,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findDebitCardByNumber(){
+	public void findActiveDebitCardByNumber(){
 		
 		try{
 			DebitCardBO card = bankService.findActiveDebitCardByNumber("1456-789-0123-6574");
@@ -236,7 +222,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findDebitCardsByUser(){
+	public void findActiveDebitCardsByUser(){
 		
 		try{
 			List<DebitCardBO> cards = bankService.findActiveDebitCardsByUser("mugloorahul");
@@ -249,7 +235,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findDebitCardsByAccountNumber(){
+	public void findActiveDebitCardsByAccountNumber(){
 		
 		try{
 			List<DebitCardBO> cards = bankService.findActiveDebitCardsByAccountNumber("12323232332323");
@@ -314,7 +300,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findNetBankingByCustomerId(){
+	public void findActiveNetBankingByCustomerId(){
 		
 		try{
 			NetBankingBO nb = bankService.findActiveNetBankingByCustomerId("mugloorahul");
@@ -327,7 +313,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findNetBankingByAccount(){
+	public void findActiveNetBankingByAccount(){
 		
 		try{
 			NetBankingBO nb = bankService.findActiveNetBankingByAccount("12323232332323");
@@ -340,7 +326,7 @@ public class BankServiceTest {
 	}
 	
 	@Test
-	public void findNetBankingByUser(){
+	public void findActiveNetBankingByUser(){
 		
 		try{
 			List<NetBankingBO> nbBOs = bankService.findActiveNetBankingByUser("mugloorahul");
