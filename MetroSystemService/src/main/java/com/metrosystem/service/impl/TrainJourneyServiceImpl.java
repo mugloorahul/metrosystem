@@ -107,4 +107,42 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 		}
 	}
 
+	@Override
+	@Transactional(readOnly=false,rollbackFor={Exception.class})
+	public void startJourney(Integer journeyId, Date journeyStartTime) throws MetroSystemServiceException {
+		
+		try{
+			TrainJourneyDTO journey = trainJourneyDao.queryById(journeyId);
+			if(journey == null){
+				throw new IllegalArgumentException("Invalid journey. No journey exists with id: " + journeyId);
+			}
+			
+			journey.setActualStartTime(journeyStartTime);
+			trainJourneyDao.save(journey);
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+		
+	}
+
+	@Override
+	@Transactional(readOnly=false,rollbackFor={Exception.class})
+	public void endJourney(Integer journeyId, Date journeyEndTime) throws MetroSystemServiceException {
+		
+		try{
+			TrainJourneyDTO journey = trainJourneyDao.queryById(journeyId);
+			if(journey == null){
+				throw new IllegalArgumentException("Invalid journey. No journey exists with id: " + journeyId);
+			}
+			
+			journey.setActualEndTime(journeyEndTime);
+			trainJourneyDao.save(journey);
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+		
+	}
+
 }

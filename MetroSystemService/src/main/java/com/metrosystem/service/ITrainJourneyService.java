@@ -10,4 +10,9 @@ public interface ITrainJourneyService {
 	public Integer scheduleTrainJourney(int trainNumber, Date scheduleStartTime) throws MetroSystemServiceException;
 
     public TrainJourneyBO findTrainJourneyByScheduleTime(int trainNumber, Date scheduleTime) throws MetroSystemServiceException;
+
+    public void startJourney(Integer journeyId,Date journeyStartTime) throws MetroSystemServiceException;
+    
+    public void endJourney(Integer journeyId, Date journeyEndTime) throws MetroSystemServiceException; 
+   
 }
