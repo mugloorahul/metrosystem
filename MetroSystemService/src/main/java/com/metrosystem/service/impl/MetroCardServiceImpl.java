@@ -49,6 +49,12 @@ public class MetroCardServiceImpl implements IMetroCardService {
 			if(userDTO == null){
 				throw new IllegalArgumentException("No user exists with given identifier: " + userIdentifier);
 			}
+			//Check if metro card with given card number exists
+			MetroCardDTO existingCard = cardDao.queryCardByNumber(cardNumber);
+			if(existingCard != null){
+				throw new IllegalArgumentException("Metro card with number " + cardNumber + " already exists");
+			}
+			
 			MetroCardDTO cardDTO = cardBoDtoConverter.boToDto(null,cardNumber, userDTO, balance);
 			
 			return cardDao.save(cardDTO);
