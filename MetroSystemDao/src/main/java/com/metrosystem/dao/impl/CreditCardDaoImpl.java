@@ -69,9 +69,10 @@ public class CreditCardDaoImpl extends MetroSystemDaoImpl<Integer, CreditCardDTO
 		
 		try{
 			String query = "FROM CreditCardDTO pay" +
-	                       " WHERE pay.account.accountNumber= ? and deleted != ?" ;
+	                       " WHERE pay.account.accountNumber= ? and pay.deleted != ?" +
+					       "  AND pay.account.deleted != ?";
 		
-		    return this.queryListOfEntities(query, accountNumber,"Y");
+		    return this.queryListOfEntities(query, accountNumber,"Y","Y");
 		}
 		catch(Throwable e){
     		throw new MetroSystemDaoException(e);
