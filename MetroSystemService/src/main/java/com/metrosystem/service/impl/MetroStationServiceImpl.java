@@ -54,6 +54,16 @@ public class MetroStationServiceImpl implements IMetroStationService{
         		throw new IllegalArgumentException("No route found with given name: " + routeName);
         	}
 			
+			//Check if station with given sequence already exists
+			Set<StationRouteDTO> stationsRoutes = routeDTO.getStationRoutes();
+			if(stationsRoutes != null && stationsRoutes.size() > 0){
+				for(StationRouteDTO sr: stationsRoutes){
+					if(sr.getSequence() == sequence){
+						throw new IllegalArgumentException("Station " + sr.getStation().getName() + "already exists for route " + routeName + " at sequence " + sequence);
+					}
+				}
+			}
+			
 			StationRouteDTO stationRoute= new StationRouteDTO(sequence, stationDTO, routeDTO);
 			routeDTO.addStation(stationRoute);
 			stationDao.update(stationDTO);
