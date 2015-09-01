@@ -19,7 +19,6 @@ import com.metrosystem.dao.beans.CreditCardDTO;
 import com.metrosystem.dao.beans.DebitCardDTO;
 import com.metrosystem.dao.beans.MetroUserDTO;
 import com.metrosystem.dao.beans.NetBankingDTO;
-import com.metrosystem.dao.impl.NetBankingDaoImpl;
 import com.metrosystem.service.IBankService;
 import com.metrosystem.service.beans.BankAccountBO;
 import com.metrosystem.service.beans.CreditCardBO;
@@ -550,11 +549,15 @@ public class BankServiceImpl implements IBankService {
 	public NetBankingBO findNetBankingByAccount(String accountNumber) throws MetroSystemServiceException {
 		
 		try{
+			BankAccountDTO accountDTO = accountDao.queryAccountByNumber(accountNumber);
+			if(accountDTO == null){
+				throw new IllegalArgumentException("No bank account exists with given number: " + accountNumber);
+			}
+			
 			NetBankingDTO nbDTO = netBankingDao.queryByAccountNumber(accountNumber);
 			if(nbDTO == null){
 				return null;
 			}
-			BankAccountDTO accountDTO = nbDTO.getAccount();
 			MetroUserDTO userDTO = accountDTO.getUser();
 			
 			MetroUserBO userBO = userBoDtoConverter.dtoToBo(userDTO.getUserId(), 
