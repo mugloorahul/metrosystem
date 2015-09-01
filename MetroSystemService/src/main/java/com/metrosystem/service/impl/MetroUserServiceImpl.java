@@ -41,6 +41,12 @@ public class MetroUserServiceImpl implements IMetroUserService {
 	public Integer createUser(String identifier, String name) throws MetroSystemServiceException {
 		
 		try{
+			//Check if user exists with given identifier
+			MetroUserDTO existingUser = userDao.queryUserByIdentifier(identifier);
+			if(existingUser != null){
+				throw new IllegalArgumentException("User with identifier " + identifier + " already exists");
+			}
+			
 			MetroUserDTO user = userBoDtoConverter.boToDto(null, identifier, name);
 			return userDao.save(user);
 		}
