@@ -37,4 +37,29 @@ public class TrainJourneyDaoImpl extends MetroSystemDaoImpl<Integer, TrainJourne
 			throw new MetroSystemDaoException(e);
 		}
 	}
+
+	@Override
+	public TrainJourneyDTO queryLatestTrainJourney(int trainNumber) throws MetroSystemDaoException {
+		try{
+			String query = "FROM TrainJourneyDTO WHERE " +
+		                   " WHERE scheduledStartTime = ("+ 
+					                           "SELECT max(scheduledStartTime) "+ 
+		                                       " FROM TrainJourneyDTO " +
+		                                       " WHERE train.trainNumber = ?" +
+					                           "   GROUP BY train"+
+		                                       ")" +
+					       "   AND train.trainNumber = ?";
+			
+			List<TrainJourneyDTO> results = this.queryListOfEntities(query, trainNumber,trainNumber);
+			if(results == null || results.size() == 0){
+				return null;
+			}
+			
+			return results.get(0);
+			
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
 }

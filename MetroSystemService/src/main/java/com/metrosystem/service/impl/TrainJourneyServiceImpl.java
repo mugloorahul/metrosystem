@@ -109,12 +109,12 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 
 	@Override
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
-	public void startJourney(Integer journeyId, Date journeyStartTime) throws MetroSystemServiceException {
+	public void startJourney(int trainNumber,Date journeyStartTime) throws MetroSystemServiceException {
 		
 		try{
-			TrainJourneyDTO journey = trainJourneyDao.queryById(journeyId);
+			TrainJourneyDTO journey = trainJourneyDao.queryLatestTrainJourney(trainNumber);
 			if(journey == null){
-				throw new IllegalArgumentException("Invalid journey. No journey exists with id: " + journeyId);
+				throw new IllegalArgumentException("Invalid journey. No journey for train: " + trainNumber);
 			}
 			
 			journey.setActualStartTime(journeyStartTime);
@@ -128,12 +128,12 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 
 	@Override
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
-	public void endJourney(Integer journeyId, Date journeyEndTime) throws MetroSystemServiceException {
+	public void endJourney(int trainNumber,Date journeyEndTime) throws MetroSystemServiceException {
 		
 		try{
-			TrainJourneyDTO journey = trainJourneyDao.queryById(journeyId);
+			TrainJourneyDTO journey = trainJourneyDao.queryLatestTrainJourney(trainNumber);
 			if(journey == null){
-				throw new IllegalArgumentException("Invalid journey. No journey exists with id: " + journeyId);
+				throw new IllegalArgumentException("Invalid journey. No journey for train: " + trainNumber);
 			}
 			
 			journey.setActualEndTime(journeyEndTime);
