@@ -72,6 +72,13 @@ public class MetroStationServiceImpl implements IMetroStationService{
 	public Integer createStation(String name, String latitude, String longitude)throws MetroSystemServiceException 
 	{
 	   try{
+		   
+		   //Check if station already exists
+		   MetroStationDTO existingStation = stationDao.queryStationByName(name);
+		   if(existingStation != null){
+			   throw new IllegalArgumentException("Station with name " + name  + " already exists.");
+		   }
+		   
 		   MetroStationDTO stationDTO = stationBoDtoConverter.
 				                        boToDto(null, name, latitude, longitude);
 		   return (Integer)stationDao.save(stationDTO); 
