@@ -50,6 +50,18 @@ public class BankServiceTest {
 	}
 	
 	@Test
+	public void openDuplicateBankAccount(){
+		try{
+			Integer num = bankService.openBankAccount("14445568776543", 200, "mugloorahul");
+			assertTrue(num != null);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
 	public void openMultipleBankAccountsForUser(){
 		try{
 	         String nums[] = {"12323232332323","677789654223","8765390876"};
@@ -101,6 +113,22 @@ public class BankServiceTest {
 	
 	@Test
 	public void createCreditCard(){
+		
+		try{
+			CreditCardBO card = new CreditCardBO("1889 87656 123 456", 
+					223, "12", "2014", 10000, null);
+			
+			Integer id = bankService.createCreditCard(card, "12323232332323");
+			assertTrue(id != null);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void createDuplicateCreditCard(){
 		
 		try{
 			CreditCardBO card = new CreditCardBO("1889 87656 123 456", 
@@ -181,6 +209,20 @@ public class BankServiceTest {
 	}
 	
 	@Test
+	public void createDuplicateDebitCard(){
+		
+		try{
+			DebitCardBO card = new DebitCardBO("1456-789-0123-6574", 223, "12", "2014", null);
+			Integer id = bankService.createDebitCard(card, "12323232332323");
+			assertTrue(id != null);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
 	public void findDebitCardByNumber(){
 		
 		try{
@@ -233,6 +275,20 @@ public class BankServiceTest {
 	
 	@Test
 	public void activateNetBanking(){
+		
+		try{
+			NetBankingBO bo = new NetBankingBO("mugloorahul", "test123", null);
+			Integer id = bankService.activateNetBanking(bo, "12323232332323");
+			assertTrue(id != null);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void activateDuplicateNetBanking(){
 		
 		try{
 			NetBankingBO bo = new NetBankingBO("mugloorahul", "test123", null);
