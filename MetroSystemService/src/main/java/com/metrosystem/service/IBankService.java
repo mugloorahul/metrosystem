@@ -19,21 +19,21 @@ public interface IBankService {
 	
 	public void closeBankAccount(String accountNumber) throws MetroSystemServiceException;
 	
-	public CreditCardBO findCreditCardByNumber(String creditCardNumber) throws MetroSystemServiceException;
+	public CreditCardBO findActiveCreditCardByNumber(String creditCardNumber) throws MetroSystemServiceException;
 		
-	public List<CreditCardBO> findCreditCardsByUser(String userIdentifier) throws MetroSystemServiceException;
+	public List<CreditCardBO> findActiveCreditCardsByUser(String userIdentifier) throws MetroSystemServiceException;
 		
-	public List<CreditCardBO> findCreditCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException;
+	public List<CreditCardBO> findActiveCreditCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException;
 
 	public void deleteCreditCard(String creditCardNumber) throws MetroSystemServiceException;
 	    
 	public Integer createCreditCard(CreditCardBO creditCard,String accountNumber) throws MetroSystemServiceException;
 
-	public DebitCardBO findDebitCardByNumber(String debitCardNumber) throws MetroSystemServiceException;
+	public DebitCardBO findActiveDebitCardByNumber(String debitCardNumber) throws MetroSystemServiceException;
 	    
-	public List<DebitCardBO> findDebitCardsByUser(String userIdentifier) throws MetroSystemServiceException;
+	public List<DebitCardBO> findActiveDebitCardsByUser(String userIdentifier) throws MetroSystemServiceException;
 	    
-	public List<DebitCardBO> findDebitCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException;
+	public List<DebitCardBO> findActiveDebitCardsByAccountNumber(String accountNumber) throws MetroSystemServiceException;
 	    
 	public void deleteDebitCard(String debitCardNumber) throws MetroSystemServiceException;
 	    
@@ -43,9 +43,9 @@ public interface IBankService {
     
     public void deactivateNetBanking(String customerId) throws MetroSystemServiceException;
     
-    public NetBankingBO findNetBankingByCustomerId(String customerId) throws MetroSystemServiceException;
+    public NetBankingBO findActiveNetBankingByCustomerId(String customerId) throws MetroSystemServiceException;
     
-    public NetBankingBO findNetBankingByAccount(String accountNumber) throws MetroSystemServiceException;
+    public NetBankingBO findActiveNetBankingByAccount(String accountNumber) throws MetroSystemServiceException;
     
-    public List<NetBankingBO> findNetBankingByUser(String userIdentifier) throws MetroSystemServiceException;
+    public List<NetBankingBO> findActiveNetBankingByUser(String userIdentifier) throws MetroSystemServiceException;
 }
