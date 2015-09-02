@@ -61,7 +61,8 @@ public class MetroStationServiceImpl implements IMetroStationService{
 			
 			Set<StationRouteDTO> stationsRoutes = routeDTO.getStationRoutes();
 			//Check if station already exists
-			if(stationValidator.validateStationExistsForRoute(stationName, stationsRoutes)){
+			StationRouteDTO sr = stationValidator.validateStationExistsForRoute(stationName, stationsRoutes);
+			if(sr != null){
 				throw new IllegalArgumentException("Station " + stationName + " already exists for route " + routeName);
 			}
 			
@@ -80,9 +81,6 @@ public class MetroStationServiceImpl implements IMetroStationService{
 		}
 		
 	}
-
-
-    
 
 	@Override
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
@@ -106,9 +104,6 @@ public class MetroStationServiceImpl implements IMetroStationService{
 		
 	}
 
-
-
-
 	@Override
 	public MetroStationBO findStationByName(String name) throws MetroSystemServiceException {
         try{
@@ -130,9 +125,6 @@ public class MetroStationServiceImpl implements IMetroStationService{
         }
 		
 	}
-
-
-
 
 	@Override
 	public List<MetroStationBO> getStationsForRoute(String routeName) throws MetroSystemServiceException {
@@ -162,6 +154,48 @@ public class MetroStationServiceImpl implements IMetroStationService{
 			throw new MetroSystemServiceException(e);
 		}
 
+	}
+
+	@Override
+	@Transactional(readOnly=false,rollbackFor={Exception.class})
+	public void changeStationSequenceForRoute(String stationName,String routeName, int newSequence) 
+	throws MetroSystemServiceException {
+		
+        try{
+			
+			//Get the station
+			MetroStationDTO stationDTO = stationDao.queryStationByName(stationName);
+			if(stationDTO == null){
+				throw new IllegalArgumentException("No station found with given name: " + stationName);
+			}
+			
+			//Get the route
+			RouteDTO routeDTO = routeDao.queryRouteByName(routeName);
+			if(routeDTO == null){
+        		throw new IllegalArgumentException("No route found with given name: " + routeName);
+        	}
+			
+			Set<StationRouteDTO> stationsRoutes = routeDTO.getStationRoutes();
+			//Check if station already exists
+			StationRouteDTO srDTO = stationValidator.validateStationExistsForRoute(stationName, stationsRoutes);
+			if(srDTO == null){
+				throw new IllegalArgumentException("Station " + stationName + " does not exist for route " + routeName);
+			}
+			
+			//Check if the provided sequence is already present
+			String existingStation = stationValidator.validateNewStationSequenceForRoute(newSequence, stationsRoutes);
+			if(existingStation != null){
+				throw new IllegalArgumentException("Station " + existingStation + " already exists at sequence "+ newSequence);
+			}
+			
+			srDTO.setSequence(newSequence);
+			routeDTO.addStation(srDTO);
+			stationDao.update(stationDTO);
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+		
 	}
 
 }
