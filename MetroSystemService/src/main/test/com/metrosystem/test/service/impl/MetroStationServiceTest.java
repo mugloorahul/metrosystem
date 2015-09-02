@@ -38,7 +38,7 @@ public class MetroStationServiceTest {
 	@Test
 	public void createStation(){
 		try{
-			Integer id = stationService.createStation("Jammu", "33.6", "40.1");
+			Integer id = stationService.createStation("Pune", "33.6", "40.1");
 			assertTrue(id != null);
 		}
 		catch(MetroSystemServiceException e){
@@ -75,7 +75,7 @@ public class MetroStationServiceTest {
 	public void addStationToRoute(){
 		try{
 			//MetroStationBO station = stationService.findStationByName("Jammu");
-			stationService.addStationToRoute("Jammu", "Jammu to Pune", 1);
+			stationService.addStationToRoute("Jammu", "Pune to Delhi", 1);
 		}
 		catch(MetroSystemServiceException e){
 			e.printStackTrace();
@@ -87,7 +87,7 @@ public class MetroStationServiceTest {
 	public void addStationToRouteWithDuplicateSequence(){
 		try{
 			//MetroStationBO station = stationService.findStationByName("Jammu");
-			stationService.addStationToRoute("Jammu", "Jammu to Pune", 1);
+			stationService.addStationToRoute("Pune", "Pune to Delhi", 2);
 		}
 		catch(MetroSystemServiceException e){
 			e.printStackTrace();
@@ -98,12 +98,37 @@ public class MetroStationServiceTest {
 	@Test
 	public void getStationsForRoute(){
 		try{
-			List<MetroStationBO> stations = stationService.getStationsForRoute("Jammu to Pune");
+			List<MetroStationBO> stations = stationService.getStationsForRoute("Pune to Delhi");
 			assertTrue(stations != null && stations.size() > 0);
 		}
 		catch(MetroSystemServiceException e){
 			e.printStackTrace();
 			assertTrue(false);
 		}
+	}
+	
+	@Test
+	public void addDuplicateStationToRoute(){
+		
+		try{
+			stationService.addStationToRoute("Jammu", "Pune to Delhi", 2);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void changeStationSequenceForRoute(){
+		
+		try{
+			stationService.changeStationSequenceForRoute("Pune", "Pune to Delhi", 3);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
 	}
 }
