@@ -37,4 +37,59 @@ public class TrainJourneyDaoImpl extends MetroSystemDaoImpl<Integer, TrainJourne
 			throw new MetroSystemDaoException(e);
 		}
 	}
+
+	@Override
+	public TrainJourneyDTO queryLatestScheduledJourney(int trainNumber) throws MetroSystemDaoException {
+		
+		try{
+			String query = "FROM TrainJourneyDTO"+
+		                   " WHERE train.trainNumber = ?" +
+					       "   AND scheduledStartTime = (" +
+		                   "                            SELECT max(scheduledStartTime)" +
+					       "                            FROM TrainJourneyDTO " +
+		                   "                            WHERE train.trainNumber = ?" +
+					       "                              AND actualStartTime IS  NULL" +
+					       "                            GROUP BY train" +
+		                   "                            )";
+			
+			List<TrainJourneyDTO> results = this.queryListOfEntities(query, trainNumber,trainNumber);
+			
+			if(results == null || results.size() ==0){
+				return null;
+			}
+			
+			return results.get(0);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+	
+	@Override
+	public TrainJourneyDTO queryLatestJourneyInProgress(int trainNumber) throws MetroSystemDaoException {
+		
+		try{
+			String query = "FROM TrainJourneyDTO"+
+		                   " WHERE train.trainNumber = ?" +
+					       "   AND actualStartTime   = (" +
+		                   "                            SELECT max(actualStartTime)" +
+					       "                            FROM TrainJourneyDTO " +
+		                   "                            WHERE train.trainNumber = ?" +
+					       "                              AND actualStartTime IS NOT NULL" +
+					       "                              AND actualEndTime IS NULL" +
+					       "                            GROUP BY train" +
+		                   "                            )";
+			
+			List<TrainJourneyDTO> results = this.queryListOfEntities(query, trainNumber,trainNumber);
+			
+			if(results == null || results.size() ==0){
+				return null;
+			}
+			
+			return results.get(0);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}	
 }
