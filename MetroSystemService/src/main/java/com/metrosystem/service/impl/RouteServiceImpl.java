@@ -17,6 +17,7 @@ import com.metrosystem.dao.beans.StationRouteDTO;
 import com.metrosystem.service.IRouteService;
 import com.metrosystem.service.beans.RouteBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
+import com.metrosystem.service.exception.ServiceValidationException;
 import com.metrosystem.service.utils.RouteBoDtoConverter;
 
 @Component("routeService")
@@ -42,7 +43,7 @@ public class RouteServiceImpl implements IRouteService {
 			//Check if route with this name already exists
 			RouteDTO existingRoute = routeDao.queryRouteByName(routeName);
 			if(existingRoute != null){
-				throw new IllegalArgumentException("Route with name " + routeName + " already exists.");
+				throw new ServiceValidationException("Route with name " + routeName + " already exists.");
 			}
 			
 			return (Integer)routeDao.save(routeBoDtoConverter.boToDto(null, routeName));
@@ -76,7 +77,7 @@ public class RouteServiceImpl implements IRouteService {
 		try{
 			MetroStationDTO stationDTO = stationDao.queryStationByName(stationName);
 			if(stationDTO == null){
-				throw new IllegalArgumentException("No station exists with given name: " + stationName);
+				throw new ServiceValidationException("No station exists with given name: " + stationName);
 			}
 			
 			Set<StationRouteDTO> stationsRoutes = stationDTO.getStationRoutes();
