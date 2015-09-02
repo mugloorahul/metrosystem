@@ -7,7 +7,11 @@ import com.metrosystem.service.exception.MetroSystemServiceException;
 
 public interface ITrainJourneyService {
 
-	public Integer scheduleTrainJourney(int trainNumber, Date scheduleStartTime) throws MetroSystemServiceException;
+    public Integer scheduleTrainJourney(int trainNumber, Date scheduleStartTime) throws MetroSystemServiceException;
 
     public TrainJourneyBO findTrainJourneyByScheduleTime(int trainNumber, Date scheduleTime) throws MetroSystemServiceException;
+
+    public void startTrainJourney(int trainNumber,Date startTime) throws MetroSystemServiceException;
+    
+    public void finishTrainJourney(int trainNumber,Date endTime) throws MetroSystemServiceException;
 }
