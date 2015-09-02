@@ -17,6 +17,7 @@ import com.metrosystem.service.IMetroCardService;
 import com.metrosystem.service.beans.MetroCardBO;
 import com.metrosystem.service.beans.MetroUserBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
+import com.metrosystem.service.exception.ServiceValidationException;
 import com.metrosystem.service.utils.MetroCardBoDtoConverter;
 import com.metrosystem.service.utils.MetroUserBoDtoConverter;
 
@@ -47,12 +48,12 @@ public class MetroCardServiceImpl implements IMetroCardService {
 		try{
 			MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
 			if(userDTO == null){
-				throw new IllegalArgumentException("No user exists with given identifier: " + userIdentifier);
+				throw new ServiceValidationException("No user exists with given identifier: " + userIdentifier);
 			}
 			//Check if metro card with given card number exists
 			MetroCardDTO existingCard = cardDao.queryCardByNumber(cardNumber);
 			if(existingCard != null){
-				throw new IllegalArgumentException("Metro card with number " + cardNumber + " already exists");
+				throw new ServiceValidationException("Metro card with number " + cardNumber + " already exists");
 			}
 			
 			MetroCardDTO cardDTO = cardBoDtoConverter.boToDto(null,cardNumber, userDTO, balance);
@@ -70,7 +71,7 @@ public class MetroCardServiceImpl implements IMetroCardService {
 		try{
 			MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
 			if(userDTO == null){
-				throw new IllegalArgumentException("No user exists with given identifier: " + userDTO);
+				throw new ServiceValidationException("No user exists with given identifier: " + userDTO);
 			}
 			
 			MetroUserBO userBO = userBoDtoConverter.dtoToBo(userDTO.getUserId(), userDTO.getUniqueIdentifier(), userDTO.getName());
