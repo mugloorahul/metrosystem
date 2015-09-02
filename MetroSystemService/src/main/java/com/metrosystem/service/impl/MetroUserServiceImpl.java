@@ -13,6 +13,7 @@ import com.metrosystem.dao.beans.MetroUserDTO;
 import com.metrosystem.service.IMetroUserService;
 import com.metrosystem.service.beans.MetroUserBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
+import com.metrosystem.service.exception.ServiceValidationException;
 import com.metrosystem.service.utils.BankAccountBoDtoConverter;
 import com.metrosystem.service.utils.MetroCardBoDtoConverter;
 import com.metrosystem.service.utils.MetroUserBoDtoConverter;
@@ -44,7 +45,7 @@ public class MetroUserServiceImpl implements IMetroUserService {
 			//Check if user exists with given identifier
 			MetroUserDTO existingUser = userDao.queryUserByIdentifier(identifier);
 			if(existingUser != null){
-				throw new IllegalArgumentException("User with identifier " + identifier + " already exists");
+				throw new ServiceValidationException("User with identifier " + identifier + " already exists");
 			}
 			
 			MetroUserDTO user = userBoDtoConverter.boToDto(null, identifier, name);
