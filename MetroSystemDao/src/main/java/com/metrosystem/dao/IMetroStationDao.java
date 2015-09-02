@@ -11,4 +11,5 @@ public interface IMetroStationDao extends  IMetroSystemDao<Integer, MetroStation
 	
 	public void insertMultipleStations(List<MetroStationDTO> stations) throws MetroSystemDaoException;
 	
+	public List<MetroStationDTO> queryStationsForRouteOrderedBySequence(String routeName) throws MetroSystemDaoException;
 }
