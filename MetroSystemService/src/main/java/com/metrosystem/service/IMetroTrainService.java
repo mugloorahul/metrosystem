@@ -2,6 +2,10 @@ package com.metrosystem.service;
 
 import java.util.List;
 
+import com.metrosystem.service.beans.MetroTrainBO;
+import com.metrosystem.service.beans.TrainJourneyBO;
+import com.metrosystem.service.exception.MetroSystemServiceException;
+
 public interface IMetroTrainService {
 
 	public Integer createTrain(int trainNumber,String name, String routeName) throws MetroSystemServiceException;

@@ -2,6 +2,13 @@ package com.metrosystem.service.utils;
 
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
+import com.metrosystem.dao.beans.MetroTrainDTO;
+import com.metrosystem.dao.beans.TrainJourneyDTO;
+import com.metrosystem.service.beans.MetroTrainBO;
+import com.metrosystem.service.beans.TrainJourneyBO;
+
 @Component("trainJourneyBoDtoConverter")
 public class TrainJourneyBoDtoConverter {
 
