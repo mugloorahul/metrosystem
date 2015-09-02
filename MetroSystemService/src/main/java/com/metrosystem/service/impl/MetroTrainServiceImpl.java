@@ -266,7 +266,11 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 			MetroTrainBO trainBO = trainBoDtoConverter.dtoToBo(trainDTO.getTrainNumber(), trainDTO.getName(), routeBO);
 			
 			for(TrainJourneyDTO journeyDTO : journeyDTOs){
-				TrainJourneyBO journeyBO = trainJourneyBoDtoConverter.dtoToBo(journeyDTO.getJourneyId(), journeyDTO.getScheduledStartTime(), trainBO);
+				TrainJourneyBO journeyBO = trainJourneyBoDtoConverter.
+						                          dtoToBo(journeyDTO.getJourneyId(), 
+						                                  journeyDTO.getScheduledStartTime(), trainBO,
+						                                  journeyDTO.getActualStartTime(),
+						                                  journeyDTO.getActualEndTime());
 				journeyBOs.add(journeyBO);
 			}
 			

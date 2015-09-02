@@ -69,7 +69,7 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 			}
 			
 			TrainJourneyDTO journeyDTO = trainJourneyBoDtoConverter.
-					                          boToDto(null, scheduleStartTime, train);
+					                          boToDto(null, scheduleStartTime, train,null,null);
 			
 			return trainJourneyDao.save(journeyDTO);
 		}
@@ -102,7 +102,9 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 			
 			TrainJourneyBO journeyBO = trainJourneyBoDtoConverter.
 					                        dtoToBo(journeyDTO.getJourneyId(), 
-					                        		journeyDTO.getScheduledStartTime(), trainBO);
+					                        		journeyDTO.getScheduledStartTime(), trainBO,
+					                        		journeyDTO.getActualStartTime(),
+					                        		journeyDTO.getActualEndTime());
 			
 			return journeyBO;
 		}
