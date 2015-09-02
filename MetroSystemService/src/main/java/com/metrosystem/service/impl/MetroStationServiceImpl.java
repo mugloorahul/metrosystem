@@ -18,6 +18,7 @@ import com.metrosystem.service.IMetroStationService;
 import com.metrosystem.service.beans.MetroStationBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
 import com.metrosystem.service.utils.MetroStationBoDtoConverter;
+import com.metrosystem.service.validator.MetroStationValidator;
 
 @Component("stationService")
 @Transactional(readOnly=true,rollbackFor={Exception.class})
@@ -34,6 +35,10 @@ public class MetroStationServiceImpl implements IMetroStationService{
 	@Autowired
 	@Qualifier("stationBoDtoConverter")
 	private MetroStationBoDtoConverter stationBoDtoConverter;
+	
+	@Autowired
+	@Qualifier("stationValidator")
+	private MetroStationValidator stationValidator;
 	
 	
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
@@ -54,14 +59,16 @@ public class MetroStationServiceImpl implements IMetroStationService{
         		throw new IllegalArgumentException("No route found with given name: " + routeName);
         	}
 			
-			//Check if station with given sequence already exists
 			Set<StationRouteDTO> stationsRoutes = routeDTO.getStationRoutes();
-			if(stationsRoutes != null && stationsRoutes.size() > 0){
-				for(StationRouteDTO sr: stationsRoutes){
-					if(sr.getSequence() == sequence){
-						throw new IllegalArgumentException("Station " + sr.getStation().getName() + "already exists for route " + routeName + " at sequence " + sequence);
-					}
-				}
+			//Check if station already exists
+			if(stationValidator.validateStationExistsForRoute(stationName, stationsRoutes)){
+				throw new IllegalArgumentException("Station " + stationName + " already exists for route " + routeName);
+			}
+			
+			//Check if the provided sequence is already present
+			String existingStation = stationValidator.validateNewStationSequenceForRoute(sequence, stationsRoutes);
+			if(existingStation != null){
+				throw new IllegalArgumentException("Station " + existingStation + " already exists at sequence "+ sequence);
 			}
 			
 			StationRouteDTO stationRoute= new StationRouteDTO(sequence, stationDTO, routeDTO);
