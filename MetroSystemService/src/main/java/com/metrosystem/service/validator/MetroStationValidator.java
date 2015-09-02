@@ -9,15 +9,15 @@ import com.metrosystem.dao.beans.StationRouteDTO;
 @Component("stationValidator")
 public class MetroStationValidator {
 
-	public boolean validateStationExistsForRoute(String newStation,Collection<StationRouteDTO> stationsRoutes){
+	public StationRouteDTO validateStationExistsForRoute(String newStation,Collection<StationRouteDTO> stationsRoutes){
 		
 		for(StationRouteDTO sr: stationsRoutes){
 			if(sr.getStation().getName().equals(newStation)){
-				return true;
+				return sr;
 			}
 		}
 			
-		return false;	
+		return null;	
 	}
 	
 	public String validateNewStationSequenceForRoute(int newSequence,Collection<StationRouteDTO> stationsRoutes){
