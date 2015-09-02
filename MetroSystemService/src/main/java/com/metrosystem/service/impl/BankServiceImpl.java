@@ -26,6 +26,7 @@ import com.metrosystem.service.beans.DebitCardBO;
 import com.metrosystem.service.beans.MetroUserBO;
 import com.metrosystem.service.beans.NetBankingBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
+import com.metrosystem.service.exception.ServiceValidationException;
 import com.metrosystem.service.utils.BankAccountBoDtoConverter;
 import com.metrosystem.service.utils.CreditCardBoDtoConverter;
 import com.metrosystem.service.utils.DebitCardBoDtoConverter;
@@ -86,12 +87,12 @@ public class BankServiceImpl implements IBankService {
 			//Check if bank account  with given number exists
 			BankAccountDTO existingAccount = accountDao.queryBankAccountByNumber(accountNumber);
 			if(existingAccount != null){
-				throw new IllegalArgumentException("Bank account with given number" + accountNumber + " already exists.");
+				throw new ServiceValidationException("Bank account with given number" + accountNumber + " already exists.");
 			}
 			
 			MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
 			if(userDTO == null){
-				throw new IllegalArgumentException("No user exists with given identifier: " + userIdentifier);
+				throw new ServiceValidationException("No user exists with given identifier: " + userIdentifier);
 			}
 			BankAccountDTO account = accountBoDtoConverter.boToDtoConverter(null,accountNumber, balance, userDTO);
 			return accountDao.save(account);
@@ -107,7 +108,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 			MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
 			if(userDTO == null){
-				throw new IllegalArgumentException("No user exists with given identifier: " + userDTO);
+				throw new ServiceValidationException("No user exists with given identifier: " + userDTO);
 			}
 			MetroUserBO userBO = userBoDtoConverter.dtoToBo(userDTO.getUserId(), userDTO.getUniqueIdentifier(), userDTO.getName());
 			
@@ -159,7 +160,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 			BankAccountDTO account = accountDao.queryBankAccountByNumber(accountNumber);
 			if(account == null){
-				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
+				throw new ServiceValidationException("No account exists with given account number: " + accountNumber);
 			}
 			accountDao.delete(account);
 		}
@@ -212,7 +213,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 			MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
 			if(userDTO == null){
-				throw new IllegalArgumentException("No user exists with given user identifier: " + userIdentifier);
+				throw new ServiceValidationException("No user exists with given user identifier: " + userIdentifier);
 			}
 			
 			List<CreditCardDTO> cardDTOs = creditCardDao.queryCardsByUser(userIdentifier);
@@ -252,7 +253,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
 			if(accountDTO == null){
-				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
+				throw new ServiceValidationException("No account exists with given account number: " + accountNumber);
 			}
 			
 			List<CreditCardDTO> cardDTOs = creditCardDao.queryCardsByAccount(accountNumber);
@@ -291,7 +292,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 			CreditCardDTO card = creditCardDao.queryCardByNumber(creditCardNumber);
 			if(card == null){
-				throw new IllegalArgumentException("No credit card exists with given number: " + creditCardNumber);
+				throw new ServiceValidationException("No credit card exists with given number: " + creditCardNumber);
 			}
 			
 			creditCardDao.delete(card);
@@ -310,12 +311,12 @@ public class BankServiceImpl implements IBankService {
 		try{
 			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
 			if(accountDTO == null){
-				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
+				throw new ServiceValidationException("No account exists with given account number: " + accountNumber);
 			}
 			//Check if credit card with given number exists
 			CreditCardDTO existingCard = creditCardDao.queryCardByNumber(creditCard.getPaymentId());
 			if(existingCard != null){
-				throw new IllegalArgumentException("Credit card with number " + creditCard.getPaymentId() + " already exists.");
+				throw new ServiceValidationException("Credit card with number " + creditCard.getPaymentId() + " already exists.");
 			}
 			
 			CreditCardDTO cardDTO = creditCardConverter.
@@ -376,7 +377,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 		    MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
 		    if(userDTO == null){
-		    	throw new IllegalArgumentException("No user exists with given identifier: "+userIdentifier);
+		    	throw new ServiceValidationException("No user exists with given identifier: "+userIdentifier);
 		    }
 		    List<DebitCardDTO> cardDTOs = debitCardDao.queryCardsByUser(userIdentifier);
 		    List<DebitCardBO> cardBOs = new ArrayList<DebitCardBO>();
@@ -420,7 +421,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
 			if(accountDTO == null){
-				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
+				throw new ServiceValidationException("No account exists with given account number: " + accountNumber);
 			}
 			List<DebitCardDTO> cardDTOs = debitCardDao.queryCardsByAccount(accountNumber);
 			List<DebitCardBO> cardBOs = new ArrayList<DebitCardBO>();
@@ -460,7 +461,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 			DebitCardDTO card = debitCardDao.queryCardByNumber(debitCardNumber);
 			if(card ==null){
-				throw new IllegalArgumentException("No debit card exists with given number: " + debitCardNumber);
+				throw new ServiceValidationException("No debit card exists with given number: " + debitCardNumber);
 			}
 			debitCardDao.delete(card);
 		}
@@ -477,12 +478,12 @@ public class BankServiceImpl implements IBankService {
 		try{
 			BankAccountDTO account = accountDao.queryBankAccountByNumber(accountNumber);
 			if(account == null){
-				throw new IllegalArgumentException("No account exists with given account number: " + accountNumber);
+				throw new ServiceValidationException("No account exists with given account number: " + accountNumber);
 			}
 			
 			DebitCardDTO existingCard = debitCardDao.queryCardByNumber(debitCard.getPaymentId());
 			if(existingCard != null){
-				throw new IllegalArgumentException("Debit card with number " + debitCard.getPaymentId() + " already exists.");
+				throw new ServiceValidationException("Debit card with number " + debitCard.getPaymentId() + " already exists.");
 			}
 			DebitCardDTO cardDTO = debitCardConverter.boToDto(null, debitCard.getPaymentId(), debitCard.getCvvNumber(), 
 					                                          debitCard.getExpiryMonth(), debitCard.getExpiryYear(), account);
@@ -501,12 +502,12 @@ public class BankServiceImpl implements IBankService {
 		try{
 			BankAccountDTO account = accountDao.queryBankAccountByNumber(accountNumber);
 			if(account == null){
-				throw new IllegalArgumentException("No bank account exists with given number: " + accountNumber);
+				throw new ServiceValidationException("No bank account exists with given number: " + accountNumber);
 			}
 			//Check if customer id already exists
 			NetBankingDTO existingNB = netBankingDao.queryByCustomerId(netBanking.getPaymentId());
 			if(existingNB != null){
-				throw new IllegalArgumentException("Customer id " + netBanking.getPaymentId() + " already exists");
+				throw new ServiceValidationException("Customer id " + netBanking.getPaymentId() + " already exists");
 			}
 			
 			NetBankingDTO dto = netBankingConverter.boToDto(null, netBanking.getPaymentId(), netBanking.getPassword(), account);
@@ -525,7 +526,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 			NetBankingDTO nb = netBankingDao.queryByCustomerId(customerId);
 			if(nb == null){
-				throw new IllegalArgumentException("No net banking exists for given customer id: " + customerId);
+				throw new ServiceValidationException("No net banking exists for given customer id: " + customerId);
 			}
 			
 			netBankingDao.delete(nb);
@@ -572,7 +573,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 			BankAccountDTO accountDTO = accountDao.queryBankAccountByNumber(accountNumber);
 			if(accountDTO == null){
-				throw new IllegalArgumentException("No bank account exists with given number: " + accountNumber);
+				throw new ServiceValidationException("No bank account exists with given number: " + accountNumber);
 			}
 			
 			NetBankingDTO nbDTO = netBankingDao.queryByAccountNumber(accountNumber);
@@ -605,7 +606,7 @@ public class BankServiceImpl implements IBankService {
 		try{
 			MetroUserDTO userDTO = userDao.queryUserByIdentifier(userIdentifier);
 			if(userDTO == null){
-				throw new IllegalArgumentException("No user exists with given identifier: " + userIdentifier);
+				throw new ServiceValidationException("No user exists with given identifier: " + userIdentifier);
 			}
 			
 			List<NetBankingDTO> nbDTOs = netBankingDao.queryByUser(userIdentifier);
