@@ -12,4 +12,6 @@ public interface IUserJourneyDao extends IMetroSystemDao<Integer, UserJourneyDTO
 	public UserJourneyDTO queryLatestScheduledJourney(String userIdentifier) throws MetroSystemDaoException;
 	
 	public UserJourneyDTO queryLatestJourneyInProgress(String userIdentifier) throws MetroSystemDaoException;
+	
+	public UserJourneyDTO queryLatestJourneyToBeScheduled(String userIdentifier) throws MetroSystemDaoException;
 }

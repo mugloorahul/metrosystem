@@ -2,6 +2,9 @@ package com.metrosystem.service.beans;
 
 import java.util.Date;
 
+import com.metrosystem.dao.beans.MetroStationDTO;
+import com.metrosystem.dao.beans.MetroUserDTO;
+
 public class UserJourneyBO {
 
 	private int journeyId;
@@ -38,6 +41,15 @@ public class UserJourneyBO {
 		this.destinationStation = destinationStation;
 		this.swipeInTime = swipeInTime;
 		this.swipeOutTime = swipeOutTime;
+	}
+	
+	public UserJourneyBO(MetroUserBO user,Date swipeInTime,
+			MetroStationBO source,MetroStationBO destination)
+	{
+	  this.user=user;
+	  this.swipeInTime=swipeInTime;
+	  this.sourceStation=source;
+	  this.destinationStation=destination;
 	}
 
 	/**
