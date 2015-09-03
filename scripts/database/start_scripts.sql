@@ -11,7 +11,9 @@ DROP TABLE debit_card_payment;
 DROP TABLE net_banking_payment;
 DROP TABLE train_journey_monitor;
 DROP TABLE train_journey;
-DROP TABLE user_journey;
+DROP TABLE user_journey
+DROP TABLE train_schedule;
+DROP TABLE train_schedule_timings;
 
 CREATE TABLE metro_station(station_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),name VARCHAR(50) NOT NULL,latitude VARCHAR(30) NOT NULL,longitude VARCHAR(30) NOT NULL);
 
@@ -55,7 +57,7 @@ CREATE TABLE train_journey_monitor(monitor_id INT PRIMARY KEY GENERATED ALWAYS A
 
 CREATE TABLE train_schedule(schedule_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), train_number INT NOT NULL);
 
-CREATE TABLE train_schedule_timings(id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), schedule_id INT NOT NULL,station_id INT NOT NULL,arrival_time TIMESTAMP,departure_time TIMESTAMP);
+CREATE TABLE train_schedule_timings(timing_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), schedule_id INT NOT NULL,station_id INT NOT NULL,arrival_time TIMESTAMP,departure_time TIMESTAMP);
 
 ALTER TABLE train_journey_monitor ADD CONSTRAINT fk_train_journey_1 FOREIGN KEY(train_journey_id) REFERENCES train_journey(journey_id);
 
@@ -83,8 +85,11 @@ ALTER TABLE bank_account ADD COLUMN deleted VARCHAR(1) not null DEFAULT 'N';
 
 ALTER TABLE train_schedule ADD CONSTRAINT fk_train_1 FOREIGN KEY(train_number) REFERENCES metro_train(train_number);
 
+ALTER TABLE train_schedule ADD CONSTRAINT uk_train_schedule UNIQUE(train_number);
+
 ALTER TABLE train_schedule_timings ADD CONSTRAINT fk_station_4 FOREIGN KEY(station_id) REFERENCES metro_station(station_id);
 
 ALTER TABLE train_schedule_timings ADD CONSTRAINT fk_train_schedule FOREIGN KEY(schedule_id) REFERENCES train_schedule(schedule_id);
+
 
 COMMIT;
