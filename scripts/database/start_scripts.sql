@@ -53,7 +53,9 @@ ALTER TABLE user_journey ADD CONSTRAINT fk_station_2 FOREIGN KEY(dest_station_id
 
 CREATE TABLE train_journey_monitor(monitor_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),train_journey_id INT NOT NULL,station_id INT NOT NULL, current_station_flag VARCHAR(1) DEFAULT 'N',scheduled_arrival_time TIMESTAMP,scheduled_departure_time TIMESTAMP,actual_arrival_time TIMESTAMP,actual_departure_time TIMESTAMP);
 
-CREATE TABLE train_schedule(scheduleId INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), train_number INT NOT NULL,station_id INT NOT NULL,arrival_time TIMESTAMP,departure_time TIMESTAMP);
+CREATE TABLE train_schedule(schedule_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), train_number INT NOT NULL);
+
+CREATE TABLE train_schedule_timings(id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), schedule_id INT NOT NULL,station_id INT NOT NULL,arrival_time TIMESTAMP,departure_time TIMESTAMP);
 
 ALTER TABLE train_journey_monitor ADD CONSTRAINT fk_train_journey_1 FOREIGN KEY(train_journey_id) REFERENCES train_journey(journey_id);
 
@@ -69,7 +71,7 @@ ALTER TABLE stations_routes ADD CONSTRAINT uk_station_route_name UNIQUE (station
 
 ALTER TABLE metro_train ADD CONSTRAINT uk_train_name UNIQUE(name);
 
-ALTER TABLE metro_user ADD unique_id VARCHAR(30) not null DEFAULT '';
+ALTER TABLE metro_user ADD unique_id VARCHAR(30) not null DEFAULT ''; 
 
 ALTER TABLE metro_user ADD CONSTRAINT uk_user_identifier UNIQUE (unique_id);
 
@@ -81,6 +83,8 @@ ALTER TABLE bank_account ADD COLUMN deleted VARCHAR(1) not null DEFAULT 'N';
 
 ALTER TABLE train_schedule ADD CONSTRAINT fk_train_1 FOREIGN KEY(train_number) REFERENCES metro_train(train_number);
 
-ALTER TABLE train_schedule ADD CONSTRAINT fk_station_4 FOREIGN KEY(station_id) REFERENCES metro_station(station_id);
+ALTER TABLE train_schedule_timings ADD CONSTRAINT fk_station_4 FOREIGN KEY(station_id) REFERENCES metro_station(station_id);
+
+ALTER TABLE train_schedule_timings ADD CONSTRAINT fk_train_schedule FOREIGN KEY(schedule_id) REFERENCES train_schedule(schedule_id);
 
 COMMIT;
