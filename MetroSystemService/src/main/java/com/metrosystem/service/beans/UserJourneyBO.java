@@ -2,9 +2,6 @@ package com.metrosystem.service.beans;
 
 import java.util.Date;
 
-import com.metrosystem.dao.beans.MetroStationDTO;
-import com.metrosystem.dao.beans.MetroUserDTO;
-
 public class UserJourneyBO {
 
 	private int journeyId;

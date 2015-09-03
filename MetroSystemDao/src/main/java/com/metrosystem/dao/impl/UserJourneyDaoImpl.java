@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.metrosystem.dao.IUserJourneyDao;
 import com.metrosystem.dao.beans.MetroStationDTO;
@@ -14,6 +15,7 @@ import com.metrosystem.dao.beans.UserJourneyDTO;
 import com.metrosystem.dao.exception.MetroSystemDaoException;
 
 @Repository("userJourneyDao")
+@Transactional(readOnly=true,rollbackFor={Exception.class})
 public class UserJourneyDaoImpl extends MetroSystemDaoImpl<Integer, UserJourneyDTO> implements IUserJourneyDao{
 
 	public UserJourneyDaoImpl() {
