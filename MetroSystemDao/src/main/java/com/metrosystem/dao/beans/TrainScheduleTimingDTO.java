@@ -77,7 +77,7 @@ public class TrainScheduleTimingDTO implements Serializable {
 	/**
 	 * @return the station
 	 */
-	@ManyToOne(fetch=FetchType.LAZY,optional=false)
+	@ManyToOne(fetch=FetchType.EAGER,optional=false)
 	@JoinColumn(name="station_id")
 	public MetroStationDTO getStation() {
 		return station;

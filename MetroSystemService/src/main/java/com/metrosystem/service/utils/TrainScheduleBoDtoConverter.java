@@ -1,6 +1,6 @@
 package com.metrosystem.service.utils;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ import com.metrosystem.service.beans.TrainScheduleTimingBO;
 @Component("trainScheduleBoDtoConverter")
 public class TrainScheduleBoDtoConverter {
 
-	public TrainScheduleDTO boToDto(Integer scheduleId, MetroTrainDTO train, Set<TrainScheduleTimingDTO> timings){
+	public TrainScheduleDTO boToDto(Integer scheduleId, MetroTrainDTO train, List<TrainScheduleTimingDTO> timings){
 		
 		TrainScheduleDTO schedule = new TrainScheduleDTO(train);
 		schedule.setScheduleId(scheduleId!=null?scheduleId:0);
@@ -23,7 +23,7 @@ public class TrainScheduleBoDtoConverter {
 		return schedule;
 	}
 	
-    public TrainScheduleBO dtoToBo(Integer scheduleId, MetroTrainBO train, Set<TrainScheduleTimingBO> timings){
+    public TrainScheduleBO dtoToBo(Integer scheduleId, MetroTrainBO train, List<TrainScheduleTimingBO> timings){
 		
     	TrainScheduleBO schedule = new TrainScheduleBO(train);
 		schedule.setScheduleId(scheduleId!=null?scheduleId:0);

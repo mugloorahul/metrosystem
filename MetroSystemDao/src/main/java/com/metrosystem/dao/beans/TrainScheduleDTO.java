@@ -1,6 +1,7 @@
 package com.metrosystem.dao.beans;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -24,7 +25,7 @@ public class TrainScheduleDTO implements Serializable{
 
 	private int scheduleId;
 	private MetroTrainDTO train;
-	private Set<TrainScheduleTimingDTO> timings;
+	private List<TrainScheduleTimingDTO> timings;
 	
 	//Default constructor
 	public TrainScheduleDTO(){}
@@ -70,14 +71,14 @@ public class TrainScheduleDTO implements Serializable{
 	 * @return the timings
 	 */
 	@OneToMany(mappedBy="trainSchedule")
-	public Set<TrainScheduleTimingDTO> getTimings() {
+	public List<TrainScheduleTimingDTO> getTimings() {
 		return timings;
 	}
 
 	/**
 	 * @param timings the timings to set
 	 */
-	public void setTimings(Set<TrainScheduleTimingDTO> timings) {
+	public void setTimings(List<TrainScheduleTimingDTO> timings) {
 		this.timings = timings;
 	}
 	

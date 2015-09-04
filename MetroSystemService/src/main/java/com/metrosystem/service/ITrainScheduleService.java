@@ -10,6 +10,6 @@ public interface ITrainScheduleService {
 
 	public TrainScheduleBO getTrainSchedule(int trainNumber) throws MetroSystemServiceException;; 
 	
-	public Integer createTrainSchedule(int trainNumber, List<TrainScheduleTimingBO> timings)
+	public void createOrUpdateTrainSchedule(int trainNumber, List<TrainScheduleTimingBO> timings)
 	throws MetroSystemServiceException;
 }

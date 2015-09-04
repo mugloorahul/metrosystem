@@ -39,4 +39,25 @@ implements ITrainScheduleTimingDao
 	   }
 	
    }
+
+   @Override
+   public TrainScheduleTimingDTO queryForStation(int trainNumber,String stationName) throws MetroSystemDaoException {
+	
+	   try{
+		   String query = "FROM TrainScheduleTimingDTO" +
+	                      " WHERE train.trainNumber=?" +
+				          " AND station.name=?";
+		   
+		   List<TrainScheduleTimingDTO> results = this.queryListOfEntities(query, trainNumber,stationName);
+		   
+		   if(results == null || results.size() ==0){
+			   return null;
+		   }
+		   
+		   return results.get(0);
+	   }
+	   catch(Throwable e){
+		   throw new MetroSystemDaoException(e);
+	   }
+   }
 }

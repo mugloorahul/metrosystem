@@ -1,15 +1,14 @@
 package com.metrosystem.service.beans;
 
-import java.util.Set;
+import java.util.List;
 
 import com.metrosystem.dao.beans.TrainScheduleDTO;
-import com.metrosystem.dao.beans.TrainScheduleTimingDTO;
 
 public class TrainScheduleBO {
 
 	private int scheduleId;
 	private MetroTrainBO train;
-	private Set<TrainScheduleTimingDTO> timings;
+	private List<TrainScheduleTimingBO> timings;
 	
 	//Default constructor
 	public TrainScheduleBO(){}
@@ -49,14 +48,14 @@ public class TrainScheduleBO {
 	/**
 	 * @return the timings
 	 */
-	public Set<TrainScheduleTimingBO> getTimings() {
+	public List<TrainScheduleTimingBO> getTimings() {
 		return timings;
 	}
 
 	/**
 	 * @param timings the timings to set
 	 */
-	public void setTimings(Set<TrainScheduleTimingBO> timings) {
+	public void setTimings(List<TrainScheduleTimingBO> timings) {
 		this.timings = timings;
 	}
 	
