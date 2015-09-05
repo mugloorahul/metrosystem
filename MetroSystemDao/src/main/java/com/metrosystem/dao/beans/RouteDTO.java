@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -34,8 +35,8 @@ public class RouteDTO implements Serializable{
     public RouteDTO(){
     	
     }
-    
-    public RouteDTO(String name){
+
+	public RouteDTO(String name){
     	this.name=name;
     }
     
@@ -98,6 +99,7 @@ public class RouteDTO implements Serializable{
 	 * @return the stationRoutes
 	 */
 	@OneToMany(mappedBy="route",cascade=CascadeType.ALL)
+	@OrderBy("sequence")
 	public Set<StationRouteDTO> getStationRoutes() {
 		return stationRoutes;
 	}

@@ -60,4 +60,31 @@ implements ITrainScheduleTimingDao
 		   throw new MetroSystemDaoException(e);
 	   }
    }
+
+   @Override
+   public List<TrainScheduleTimingDTO> queryNextStationsTimings(int trainNumber,String stationName) throws MetroSystemDaoException {
+	    
+	   try{
+		   String query = "SELECT timing" +
+			              " FROM TrainScheduleTimingDTO timing" +
+                          " INNER JOIN timing.trainSchedule schedule" +
+			              " INNER JOIN schedule.train train" +
+                          " INNER JOIN train.route route" +
+			              " INNER JOIN route.stationRoutes stationRoute"+
+                          " WHERE stationRoute.station = timing.station"+
+			              "   AND train.trainNumber = ?" +
+                          "   AND stationRoute.sequence > (" +
+			              "                               SELECT sequence" +
+                          "                               FROM StationRouteDTO sr_inner" +
+			              "                               WHERE sr_inner.route.routeId = route.routeId" +
+                          "                                  AND sr_inner.station.name = ?" +
+			              "                               )" +
+                          " ORDER BY stationRoute.sequence";
+		   
+		   return this.queryListOfEntities(query, trainNumber,stationName);
+	   }
+	   catch(Throwable e){
+		   throw new MetroSystemDaoException(e);
+	   }
+   }
 }

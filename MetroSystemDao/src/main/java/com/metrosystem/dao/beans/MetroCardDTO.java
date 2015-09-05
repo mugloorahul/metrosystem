@@ -37,6 +37,7 @@ public class MetroCardDTO implements Serializable{
 		
 	}
 	
+
 	public MetroCardDTO(String cardNumber,double balance,MetroUserDTO user){
 		this.cardNumber = cardNumber;
 		this.balance=balance;

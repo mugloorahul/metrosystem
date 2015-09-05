@@ -10,4 +10,6 @@ public interface ITrainScheduleTimingDao extends IMetroSystemDao<Integer, TrainS
 	public List<TrainScheduleTimingDTO> queryTimingsForTrain(int trainNumber) throws MetroSystemDaoException;
 
     public TrainScheduleTimingDTO queryForStation(int trainNumber, String stationName) throws MetroSystemDaoException;
+    
+    public List<TrainScheduleTimingDTO> queryNextStationsTimings(int trainNumber, String stationName) throws MetroSystemDaoException;
 }

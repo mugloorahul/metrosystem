@@ -41,6 +41,7 @@ public class BankAccountDTO implements Serializable{
 		
 	}
 	
+
 	public BankAccountDTO(String accountNumber, double balance, MetroUserDTO user){
 		this.accountNumber=accountNumber;
 		this.balance=balance;
