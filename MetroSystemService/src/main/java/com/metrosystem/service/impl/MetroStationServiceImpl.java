@@ -17,7 +17,9 @@ import com.metrosystem.dao.beans.StationRouteDTO;
 import com.metrosystem.service.IMetroStationService;
 import com.metrosystem.service.beans.MetroStationBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
+import com.metrosystem.service.exception.ServiceValidationException;
 import com.metrosystem.service.utils.MetroStationBoDtoConverter;
+import com.metrosystem.service.validator.MetroStationValidator;
 
 @Component("stationService")
 @Transactional(readOnly=true,rollbackFor={Exception.class})
@@ -35,6 +37,10 @@ public class MetroStationServiceImpl implements IMetroStationService{
 	@Qualifier("stationBoDtoConverter")
 	private MetroStationBoDtoConverter stationBoDtoConverter;
 	
+	@Autowired
+	@Qualifier("stationValidator")
+	private MetroStationValidator stationValidator;
+	
 	
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
 	public void addStationToRoute(String stationName,String routeName,int sequence) 
@@ -45,23 +51,26 @@ public class MetroStationServiceImpl implements IMetroStationService{
 			//Get the station
 			MetroStationDTO stationDTO = stationDao.queryStationByName(stationName);
 			if(stationDTO == null){
-				throw new IllegalArgumentException("No station found with given name: " + stationName);
+				throw new ServiceValidationException("No station found with given name: " + stationName);
 			}
 			
 			//Get the route
 			RouteDTO routeDTO = routeDao.queryRouteByName(routeName);
 			if(routeDTO == null){
-        		throw new IllegalArgumentException("No route found with given name: " + routeName);
+        		throw new ServiceValidationException("No route found with given name: " + routeName);
         	}
 			
-			//Check if station with given sequence already exists
 			Set<StationRouteDTO> stationsRoutes = routeDTO.getStationRoutes();
-			if(stationsRoutes != null && stationsRoutes.size() > 0){
-				for(StationRouteDTO sr: stationsRoutes){
-					if(sr.getSequence() == sequence){
-						throw new IllegalArgumentException("Station " + sr.getStation().getName() + "already exists for route " + routeName + " at sequence " + sequence);
-					}
-				}
+			//Check if station already exists
+			StationRouteDTO sr = stationValidator.validateStationExistsForRoute(stationName, stationsRoutes);
+			if(sr != null){
+				throw new ServiceValidationException("Station " + stationName + " already exists for route " + routeName);
+			}
+			
+			//Check if the provided sequence is already present
+			String existingStation = stationValidator.validateNewStationSequenceForRoute(sequence, stationsRoutes);
+			if(existingStation != null){
+				throw new ServiceValidationException("Station " + existingStation + " already exists at sequence "+ sequence);
 			}
 			
 			StationRouteDTO stationRoute= new StationRouteDTO(sequence, stationDTO, routeDTO);
@@ -74,9 +83,6 @@ public class MetroStationServiceImpl implements IMetroStationService{
 		
 	}
 
-
-    
-
 	@Override
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
 	public Integer createStation(String name, String latitude, String longitude)throws MetroSystemServiceException 
@@ -86,7 +92,7 @@ public class MetroStationServiceImpl implements IMetroStationService{
 		   //Check if station already exists
 		   MetroStationDTO existingStation = stationDao.queryStationByName(name);
 		   if(existingStation != null){
-			   throw new IllegalArgumentException("Station with name " + name  + " already exists.");
+			   throw new ServiceValidationException("Station with name " + name  + " already exists.");
 		   }
 		   
 		   MetroStationDTO stationDTO = stationBoDtoConverter.
@@ -98,9 +104,6 @@ public class MetroStationServiceImpl implements IMetroStationService{
 		}
 		
 	}
-
-
-
 
 	@Override
 	public MetroStationBO findStationByName(String name) throws MetroSystemServiceException {
@@ -124,16 +127,13 @@ public class MetroStationServiceImpl implements IMetroStationService{
 		
 	}
 
-
-
-
 	@Override
 	public List<MetroStationBO> getStationsForRoute(String routeName) throws MetroSystemServiceException {
 		
 		try{
 			RouteDTO routeDTO = routeDao.queryRouteByName(routeName);
 			if(routeDTO == null){
-				throw new IllegalArgumentException("No route exists with given name: " + routeName);
+				throw new ServiceValidationException("No route exists with given name: " + routeName);
 			}
 			
 			Set<StationRouteDTO> stationsRoutes = routeDTO.getStationRoutes();
@@ -155,6 +155,48 @@ public class MetroStationServiceImpl implements IMetroStationService{
 			throw new MetroSystemServiceException(e);
 		}
 
+	}
+
+	@Override
+	@Transactional(readOnly=false,rollbackFor={Exception.class})
+	public void changeStationSequenceForRoute(String stationName,String routeName, int newSequence) 
+	throws MetroSystemServiceException {
+		
+        try{
+			
+			//Get the station
+			MetroStationDTO stationDTO = stationDao.queryStationByName(stationName);
+			if(stationDTO == null){
+				throw new ServiceValidationException("No station found with given name: " + stationName);
+			}
+			
+			//Get the route
+			RouteDTO routeDTO = routeDao.queryRouteByName(routeName);
+			if(routeDTO == null){
+        		throw new ServiceValidationException("No route found with given name: " + routeName);
+        	}
+			
+			Set<StationRouteDTO> stationsRoutes = routeDTO.getStationRoutes();
+			//Check if station already exists
+			StationRouteDTO srDTO = stationValidator.validateStationExistsForRoute(stationName, stationsRoutes);
+			if(srDTO == null){
+				throw new ServiceValidationException("Station " + stationName + " does not exist for route " + routeName);
+			}
+			
+			//Check if the provided sequence is already present
+			String existingStation = stationValidator.validateNewStationSequenceForRoute(newSequence, stationsRoutes);
+			if(existingStation != null){
+				throw new ServiceValidationException("Station " + existingStation + " already exists at sequence "+ newSequence);
+			}
+			
+			srDTO.setSequence(newSequence);
+			routeDTO.addStation(srDTO);
+			stationDao.update(stationDTO);
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+		
 	}
 
 }

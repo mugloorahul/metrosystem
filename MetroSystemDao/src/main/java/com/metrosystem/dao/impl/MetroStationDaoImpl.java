@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metrosystem.dao.IMetroStationDao;
 import com.metrosystem.dao.beans.MetroStationDTO;
+import com.metrosystem.dao.beans.StationRouteDTO;
 import com.metrosystem.dao.exception.MetroSystemDaoException;
 
 @Repository("stationDao")
@@ -34,6 +35,42 @@ public class MetroStationDaoImpl extends MetroSystemDaoImpl<Integer, MetroStatio
 		
 		this.batchInsertEntities(stations);
 		
+	}
+
+	@Override
+	public List<MetroStationDTO> queryStationsForRouteOrderedBySequence(String routeName) throws MetroSystemDaoException {
+		
+		try{
+			String query = "SELECT station " + 
+		                   " FROM StationRouteDTO" + 
+					       " WHERE route.name = ? " +
+		                   " ORDER BY sequence";
+			
+			return this.queryListOfEntities(query, routeName);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+
+	@Override
+	public StationRouteDTO queryStationForRoute(String stationName,String routeName) throws MetroSystemDaoException {
+		
+		try{
+			String query =  " FROM StationRouteDTO" + 
+					       " WHERE route.name=? " +
+		                   "  AND station.name=?";
+			
+			List<?> result= this.queryListOfEntities(query, routeName,stationName);
+			if(result == null || result.size() == 0){
+				return null;
+			}
+			
+			return (StationRouteDTO)result.get(0);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
 	}
 	
 	

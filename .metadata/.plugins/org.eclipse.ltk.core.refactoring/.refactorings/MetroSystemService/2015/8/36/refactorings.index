@@ -1,1 +1,5 @@
 1440943145509	Rename package 'com.main.service.spring'
+1441030105933	Rename type 'IBankAccountService'
+1441030130335	Rename type 'BankAccountServiceImpl'
+1441030197248	Rename type 'BankAccountServiceTest'
+1441030396879	Rename field 'accountService'

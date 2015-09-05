@@ -34,9 +34,9 @@ public class TrainJourneyBO {
 		this.monitors = monitors;
 	}
 
-	public TrainJourneyBO(MetroTrainBO train, Date scheduleStartTime){
+	public TrainJourneyBO(MetroTrainBO train,Date scheduleStartTime){
 		this.train = train;
-		this.scheduledStartTime = scheduleStartTime;
+		this.scheduledStartTime=scheduleStartTime;
 	}
 	
 	/**

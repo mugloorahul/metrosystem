@@ -135,7 +135,7 @@ public abstract class MetroSystemDaoImpl<K extends Serializable,T extends Serial
 		}
 	}
 	
-	protected final SessionFactory getSessionFactory(){
+	public SessionFactory getSessionFactory(){
 		return this.factory;
 	}
 }

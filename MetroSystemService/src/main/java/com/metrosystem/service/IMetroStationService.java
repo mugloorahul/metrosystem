@@ -16,4 +16,6 @@ public interface IMetroStationService {
 	
 	public List<MetroStationBO> getStationsForRoute(String routeName) throws MetroSystemServiceException;
 	
+	public void changeStationSequenceForRoute(String stationName, String routeName, int newSequence)
+	throws MetroSystemServiceException;
 }

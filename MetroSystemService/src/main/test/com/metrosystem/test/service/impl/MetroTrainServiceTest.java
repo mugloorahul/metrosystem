@@ -13,6 +13,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.metrosystem.service.IMetroTrainService;
 import com.metrosystem.service.beans.MetroTrainBO;
 import com.metrosystem.service.beans.RouteBO;
+import com.metrosystem.service.beans.TrainJourneyBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
 
 public class MetroTrainServiceTest {
@@ -167,6 +168,19 @@ public class MetroTrainServiceTest {
 		try{
 			List<MetroTrainBO> trains = trainService.getTrainsForRoute("Pune to Jammu");
 			assertTrue(trains != null && trains.size() > 0);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void getAllTrainJourneys(){
+		
+		try{
+			List<TrainJourneyBO> journeys = trainService.getAllTrainJourneys(2);
+			assertTrue(journeys != null && journeys.size() > 0);
 		}
 		catch(MetroSystemServiceException e){
 			e.printStackTrace();

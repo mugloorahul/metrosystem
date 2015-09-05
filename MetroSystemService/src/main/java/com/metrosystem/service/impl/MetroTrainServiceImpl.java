@@ -19,6 +19,7 @@ import com.metrosystem.service.beans.MetroTrainBO;
 import com.metrosystem.service.beans.RouteBO;
 import com.metrosystem.service.beans.TrainJourneyBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
+import com.metrosystem.service.exception.ServiceValidationException;
 import com.metrosystem.service.utils.MetroTrainBoDtoConverter;
 import com.metrosystem.service.utils.RouteBoDtoConverter;
 import com.metrosystem.service.utils.TrainJourneyBoDtoConverter;
@@ -55,7 +56,7 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 		try{
 			RouteDTO routeDTO = routeDao.queryRouteByName(routeName);
 			if(routeDTO == null){
-				throw new IllegalArgumentException("No route found with given name: " + routeName);
+				throw new ServiceValidationException("No route found with given name: " + routeName);
 			}
 			
 			//Check if train with given number exists
@@ -159,11 +160,11 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 		try{
 			RouteDTO route = routeDao.queryRouteByName(routeName);
 			if(route == null){
-				throw new IllegalArgumentException("No route exists with given name: " + routeName);
+				throw new ServiceValidationException("No route exists with given name: " + routeName);
 			}
 			MetroTrainDTO train = trainDao.queryTrainByNumber(trainNumber);
 			if(train == null){
-				throw new IllegalArgumentException("No train exists with given number: " + trainNumber);
+				throw new ServiceValidationException("No train exists with given number: " + trainNumber);
 			}
 			train.setRoute(route);
 			trainDao.update(train);
@@ -182,11 +183,11 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 		try{
 			RouteDTO route = routeDao.queryRouteByName(routeName);
 			if(route == null){
-				throw new IllegalArgumentException("No route exists with given name: " + routeName);
+				throw new ServiceValidationException("No route exists with given name: " + routeName);
 			}
 			MetroTrainDTO train = trainDao.queryTrainByName(trainName);
 			if(train == null){
-				throw new IllegalArgumentException("No train exists with given name: " + trainName);
+				throw new ServiceValidationException("No train exists with given name: " + trainName);
 			}
 			train.setRoute(route);
 			trainDao.update(train);
@@ -227,7 +228,7 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 		try{
 			RouteDTO routeDTO = routeDao.queryRouteByName(routeName);
 			if(routeDTO == null){
-				throw new IllegalArgumentException("No route exists with given name: " + routeName);
+				throw new ServiceValidationException("No route exists with given name: " + routeName);
 			}
 			
 			RouteBO routeBO = routeBoDtoConverter.dtoToBo(routeDTO.getRouteId(), routeDTO.getName());
@@ -253,7 +254,7 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 		try{
 			MetroTrainDTO trainDTO = trainDao.queryTrainByNumber(trainNumber);
 			if(trainDTO == null){
-				throw new IllegalArgumentException("No train exists with given train number: "+trainNumber);
+				throw new ServiceValidationException("No train exists with given train number: "+trainNumber);
 			}
 			Set<TrainJourneyDTO> journeyDTOs = trainDTO.getTrainJourneys();
 			List<TrainJourneyBO> journeyBOs = new ArrayList<TrainJourneyBO>();
@@ -265,7 +266,11 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 			MetroTrainBO trainBO = trainBoDtoConverter.dtoToBo(trainDTO.getTrainNumber(), trainDTO.getName(), routeBO);
 			
 			for(TrainJourneyDTO journeyDTO : journeyDTOs){
-				TrainJourneyBO journeyBO = trainJourneyBoDtoConverter.dtoToBo(journeyDTO.getJourneyId(), journeyDTO.getScheduledStartTime(), trainBO);
+				TrainJourneyBO journeyBO = trainJourneyBoDtoConverter.
+						                          dtoToBo(journeyDTO.getJourneyId(), 
+						                                  journeyDTO.getScheduledStartTime(), trainBO,
+						                                  journeyDTO.getActualStartTime(),
+						                                  journeyDTO.getActualEndTime());
 				journeyBOs.add(journeyBO);
 			}
 			

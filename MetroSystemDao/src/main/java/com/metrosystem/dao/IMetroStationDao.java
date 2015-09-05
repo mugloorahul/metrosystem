@@ -3,6 +3,7 @@ package com.metrosystem.dao;
 import java.util.List;
 
 import com.metrosystem.dao.beans.MetroStationDTO;
+import com.metrosystem.dao.beans.StationRouteDTO;
 import com.metrosystem.dao.exception.MetroSystemDaoException;
 
 public interface IMetroStationDao extends  IMetroSystemDao<Integer, MetroStationDTO>{
@@ -11,4 +12,7 @@ public interface IMetroStationDao extends  IMetroSystemDao<Integer, MetroStation
 	
 	public void insertMultipleStations(List<MetroStationDTO> stations) throws MetroSystemDaoException;
 	
+	public List<MetroStationDTO> queryStationsForRouteOrderedBySequence(String routeName) throws MetroSystemDaoException;
+
+    public StationRouteDTO queryStationForRoute(String stationName,String routeName) throws MetroSystemDaoException;
 }

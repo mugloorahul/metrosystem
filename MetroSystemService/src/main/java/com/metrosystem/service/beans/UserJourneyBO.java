@@ -39,17 +39,16 @@ public class UserJourneyBO {
 		this.swipeInTime = swipeInTime;
 		this.swipeOutTime = swipeOutTime;
 	}
-
-	public UserJourneyBO(MetroUserBO user,Date scheduledStartTime,
+	
+	public UserJourneyBO(MetroUserBO user,Date swipeInTime,
 			MetroStationBO source,MetroStationBO destination)
 	{
 	  this.user=user;
-	  this.scheduledStartTime=scheduledStartTime;
+	  this.swipeInTime=swipeInTime;
 	  this.sourceStation=source;
 	  this.destinationStation=destination;
 	}
-	
-	
+
 	/**
 	 * @return the journeyId
 	 */

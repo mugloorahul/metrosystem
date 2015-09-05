@@ -42,11 +42,11 @@ public class UserJourneyDTO implements Serializable{
 		
 	}
 	
-	public UserJourneyDTO(MetroUserDTO user,Date scheduledStartTime,
+	public UserJourneyDTO(MetroUserDTO user,Date swipeInTime,
 			MetroStationDTO source,MetroStationDTO destination)
 	{
 	  this.user=user;
-	  this.scheduledStartTime=scheduledStartTime;
+	  this.swipeInTime=swipeInTime;
 	  this.sourceStation=source;
 	  this.destinationStation=destination;
 	}
@@ -97,7 +97,7 @@ public class UserJourneyDTO implements Serializable{
 	/**
 	 * @return the scheduledStartTime
 	 */
-	@Column(name="scheduled_start_time",nullable=false)
+	@Column(name="scheduled_start_time",nullable=true)
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getScheduledStartTime() {
 		return scheduledStartTime;
@@ -167,7 +167,7 @@ public class UserJourneyDTO implements Serializable{
 	/**
 	 * @return the swipeInTime
 	 */
-	@Column(name="swipe_in_time")
+	@Column(name="swipe_in_time",nullable=false)
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getSwipeInTime() {
 		return swipeInTime;

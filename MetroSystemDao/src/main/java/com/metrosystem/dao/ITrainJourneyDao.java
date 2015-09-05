@@ -9,5 +9,8 @@ public interface ITrainJourneyDao extends IMetroSystemDao<Integer, TrainJourneyD
 
 	public TrainJourneyDTO queryJourneyByScheduleTime(int trainNumber, Date scheduleTime) throws MetroSystemDaoException;
 	
-	public TrainJourneyDTO queryLatestTrainJourney(int trainNumber) throws MetroSystemDaoException; 
+	public TrainJourneyDTO queryLatestScheduledJourney(int trainNumber) throws MetroSystemDaoException;
+
+    public TrainJourneyDTO queryLatestJourneyInProgress(int trainNumber) throws MetroSystemDaoException;
+
 }

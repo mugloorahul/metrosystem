@@ -17,6 +17,7 @@ import com.metrosystem.service.beans.MetroTrainBO;
 import com.metrosystem.service.beans.RouteBO;
 import com.metrosystem.service.beans.TrainJourneyBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
+import com.metrosystem.service.exception.ServiceValidationException;
 import com.metrosystem.service.utils.MetroTrainBoDtoConverter;
 import com.metrosystem.service.utils.RouteBoDtoConverter;
 import com.metrosystem.service.utils.TrainJourneyBoDtoConverter;
@@ -52,17 +53,23 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 		try{
 			MetroTrainDTO train = trainDao.queryTrainByNumber(trainNumber);
 			if(train == null){
-				throw new IllegalArgumentException("No train exists with given train number: " + trainNumber);
+				throw new ServiceValidationException("No train exists with given train number: " + trainNumber);
 			}
+			
+			RouteDTO routeDTO = train.getRoute();
+			if(routeDTO == null){
+				throw new ServiceValidationException("No route defined for train with number: " + trainNumber);
+			}
+			
 			
 			//Check if journey has already been scheduled at same time
 			TrainJourneyDTO existingJourney = trainJourneyDao.queryJourneyByScheduleTime(trainNumber, scheduleStartTime);
 			if(existingJourney != null){
-				throw new IllegalArgumentException("Train journey for train " + trainNumber + " is already sceduled at time " + scheduleStartTime);		
+				throw new ServiceValidationException("Train journey for train " + trainNumber + " is already scheduled at time " + scheduleStartTime);		
 			}
 			
 			TrainJourneyDTO journeyDTO = trainJourneyBoDtoConverter.
-					                          boToDto(null, scheduleStartTime, train);
+					                          boToDto(null, scheduleStartTime, train,null,null);
 			
 			return trainJourneyDao.save(journeyDTO);
 		}
@@ -78,19 +85,16 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 		try{
 			MetroTrainDTO trainDTO = trainDao.queryTrainByNumber(trainNumber);
 			if(trainDTO == null){
-				throw new IllegalArgumentException("No train exists with given train number: " + trainNumber);
+				throw new ServiceValidationException("No train exists with given train number: " + trainNumber);
 			}
-			RouteDTO routeDTO = trainDTO.getRoute();
-			if(routeDTO == null){
-				throw new IllegalArgumentException("No route defined for train with number: " + trainNumber);
-			}
-			
+		 
 			
 			TrainJourneyDTO journeyDTO = trainJourneyDao.queryJourneyByScheduleTime(trainNumber, scheduleTime);
 			if(journeyDTO == null){
 				return null;
 			}
 			
+			RouteDTO routeDTO = trainDTO.getRoute();
 			RouteBO routeBO = routeBoDtoConverter.dtoToBo(routeDTO.getRouteId(), routeDTO.getName());
 			MetroTrainBO trainBO = trainBoDtoConverter.
 					                   dtoToBo(trainDTO.getTrainNumber(), 
@@ -98,7 +102,9 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 			
 			TrainJourneyBO journeyBO = trainJourneyBoDtoConverter.
 					                        dtoToBo(journeyDTO.getJourneyId(), 
-					                        		journeyDTO.getScheduledStartTime(), trainBO);
+					                        		journeyDTO.getScheduledStartTime(), trainBO,
+					                        		journeyDTO.getActualStartTime(),
+					                        		journeyDTO.getActualEndTime());
 			
 			return journeyBO;
 		}
@@ -109,40 +115,57 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 
 	@Override
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
-	public void startJourney(int trainNumber,Date journeyStartTime) throws MetroSystemServiceException {
+	public void startTrainJourney(int trainNumber,Date startTime) throws MetroSystemServiceException {
 		
 		try{
-			TrainJourneyDTO journey = trainJourneyDao.queryLatestTrainJourney(trainNumber);
-			if(journey == null){
-				throw new IllegalArgumentException("Invalid journey. No journey for train: " + trainNumber);
+			MetroTrainDTO trainDTO = trainDao.queryTrainByNumber(trainNumber);
+			if(trainDTO == null){
+				throw new ServiceValidationException("No train exists with given train number: " + trainNumber);
 			}
 			
-			journey.setActualStartTime(journeyStartTime);
-			trainJourneyDao.save(journey);
+			//Get the latest train journey
+			TrainJourneyDTO journey = trainJourneyDao.queryLatestScheduledJourney(trainNumber);
+			if(journey == null){
+				throw new ServiceValidationException("No scheduled journey found for train with number: " + trainNumber);				
+			}
+			
+			if(journey.getScheduledStartTime().compareTo(startTime) > 0){
+				throw new ServiceValidationException("Train cannot start before schedule time: "+ journey.getScheduledStartTime());
+			}
+			journey.setActualStartTime(startTime);
+			trainJourneyDao.update(journey);
 		}
 		catch(Throwable e){
 			throw new MetroSystemServiceException(e);
 		}
-		
 	}
 
 	@Override
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
-	public void endJourney(int trainNumber,Date journeyEndTime) throws MetroSystemServiceException {
-		
+	public void finishTrainJourney(int trainNumber,Date endTime) throws MetroSystemServiceException {
+	
 		try{
-			TrainJourneyDTO journey = trainJourneyDao.queryLatestTrainJourney(trainNumber);
-			if(journey == null){
-				throw new IllegalArgumentException("Invalid journey. No journey for train: " + trainNumber);
+			MetroTrainDTO trainDTO = trainDao.queryTrainByNumber(trainNumber);
+			if(trainDTO == null){
+				throw new ServiceValidationException("No train exists with given train number: " + trainNumber);
 			}
 			
-			journey.setActualEndTime(journeyEndTime);
-			trainJourneyDao.save(journey);
+			//Get the latest train journey
+			TrainJourneyDTO journey = trainJourneyDao.queryLatestJourneyInProgress(trainNumber);
+			if(journey == null){
+				throw new ServiceValidationException("No journey in progress found for train with number: " + trainNumber);				
+			}
+
+			if(journey.getActualStartTime().compareTo(endTime) > 0){
+				throw new ServiceValidationException("Train cannot end before start time: "+ journey.getActualStartTime());
+			}
+			
+			journey.setActualEndTime(endTime);
+			trainJourneyDao.update(journey);
 		}
 		catch(Throwable e){
 			throw new MetroSystemServiceException(e);
-		}
-		
+		}	
 	}
 
 }
