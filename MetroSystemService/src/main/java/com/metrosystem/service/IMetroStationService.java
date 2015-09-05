@@ -12,6 +12,9 @@ public interface IMetroStationService {
 	
 	public Integer createStation(String name, String latitude, String longitude) throws MetroSystemServiceException;
 	
+	public Integer createStationForRoute(String stationName, String latitude,String longitude,String routeName,int sequence)
+	throws MetroSystemServiceException;
+	
 	public MetroStationBO findStationByName(String stationName) throws MetroSystemServiceException;
 	
 	public List<MetroStationBO> getStationsForRoute(String routeName) throws MetroSystemServiceException;

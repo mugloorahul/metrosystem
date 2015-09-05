@@ -8,7 +8,7 @@ import com.metrosystem.service.exception.MetroSystemServiceException;
 
 public interface IMetroTrainService {
 
-	public Integer createTrain(int trainNumber,String name, String routeName) throws MetroSystemServiceException;
+	public Integer createTrain(int trainNumber,String trainName, String routeName) throws MetroSystemServiceException;
 	
 	public Integer createTrain(int trainNumber,String name) throws MetroSystemServiceException;
 	

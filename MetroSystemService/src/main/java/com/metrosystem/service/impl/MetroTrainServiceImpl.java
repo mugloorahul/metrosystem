@@ -50,7 +50,7 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 	
 	@Override
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
-	public Integer createTrain(int trainNumber, String name, String routeName) 
+	public Integer createTrain(int trainNumber, String trainName, String routeName) 
 	throws MetroSystemServiceException {
 		
 		try{
@@ -66,7 +66,7 @@ public class MetroTrainServiceImpl implements IMetroTrainService{
 			}
 			
 			
-			MetroTrainDTO trainDTO = trainBoDtoConverter.boToDto(trainNumber, routeName, routeDTO);
+			MetroTrainDTO trainDTO = trainBoDtoConverter.boToDto(trainNumber, trainName, routeDTO);
 			
 			return trainDao.save(trainDTO);
 			

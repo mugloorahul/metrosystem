@@ -199,4 +199,47 @@ public class MetroStationServiceImpl implements IMetroStationService{
 		
 	}
 
+	@Override
+	@Transactional(readOnly=false,rollbackFor={Exception.class})
+	public Integer createStationForRoute(String stationName, String latitude,String longitude, String routeName, int sequence) 
+	throws MetroSystemServiceException
+	{
+		
+		try{
+			//Check if station already exists
+			MetroStationDTO existingStation = stationDao.queryStationByName(stationName);
+			if(existingStation != null){
+				   throw new ServiceValidationException("Station with name " + stationName  + " already exists.");
+			}
+			
+			//Get the route
+			RouteDTO routeDTO = routeDao.queryRouteByName(routeName);
+			if(routeDTO == null){
+        		throw new ServiceValidationException("No route found with given name: " + routeName);
+        	}
+			
+			Set<StationRouteDTO> stationsRoutes = routeDTO.getStationRoutes();
+			//Check if the provided sequence is already present
+			String existingStationName = stationValidator.validateNewStationSequenceForRoute(sequence, stationsRoutes);
+			if(existingStationName != null){
+				throw new ServiceValidationException("Station " + existingStationName + " already exists at sequence "+ sequence);
+			}
+			
+			//Create the station
+			MetroStationDTO stationDTO = stationBoDtoConverter.
+                                             boToDto(null, stationName, latitude, longitude);
+            Integer stationId = stationDao.save(stationDTO); 
+            stationDTO.setStationId(stationId);
+            
+            StationRouteDTO stationRoute= new StationRouteDTO(sequence, stationDTO, routeDTO);
+			routeDTO.addStation(stationRoute);
+			stationDao.update(stationDTO);
+            
+			return stationId;
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+	}
+
 }

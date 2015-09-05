@@ -56,7 +56,7 @@ public class MetroTrainServiceTest {
 	public void createTrainWithRoute(){
 		
 		try{
-			Integer trainNumber = trainService.createTrain(2, "Jehlum Express","Jammu to Pune");
+			Integer trainNumber = trainService.createTrain(2, "Jhelum Express","Jammu To Pune");
 			assertTrue(trainNumber != null);
 		}
 		catch(MetroSystemServiceException e){

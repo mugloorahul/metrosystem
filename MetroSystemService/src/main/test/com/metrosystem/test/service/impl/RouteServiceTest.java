@@ -1,5 +1,7 @@
 package com.metrosystem.test.service.impl;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -9,8 +11,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.metrosystem.service.IRouteService;
 import com.metrosystem.service.beans.RouteBO;
-
-import static org.junit.Assert.*;
 
 
 public class RouteServiceTest {
@@ -33,7 +33,7 @@ public class RouteServiceTest {
 	@Test
 	public void createRoute(){
 		try{
-           Integer routeId = routeService.createRoute("Pune to Delhi");	
+           Integer routeId = routeService.createRoute("Jammu To Pune");	
            assertTrue(routeId != null);
 		}
 		catch(Exception e){
