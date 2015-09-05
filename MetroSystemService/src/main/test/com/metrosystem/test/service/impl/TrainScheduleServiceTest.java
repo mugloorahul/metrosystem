@@ -2,6 +2,8 @@ package com.metrosystem.test.service.impl;
 
 import static org.junit.Assert.assertTrue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.metrosystem.service.IMetroStationService;
 import com.metrosystem.service.ITrainScheduleService;
 import com.metrosystem.service.beans.MetroStationBO;
+import com.metrosystem.service.beans.TrainScheduleBO;
 import com.metrosystem.service.beans.TrainScheduleTimingBO;
 import com.metrosystem.service.exception.MetroSystemServiceException;
 
@@ -43,6 +46,18 @@ public class TrainScheduleServiceTest {
 	}
 	
 	@Test
+	public void getTrainSchedule(){
+		
+		try{
+		    TrainScheduleBO schedule = scheduleService.getTrainSchedule(2);
+		    assertTrue(schedule != null);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
 	public void createOrUpdateTrainSchedule(){
 		
 		try{
@@ -99,9 +114,29 @@ public class TrainScheduleServiceTest {
 			
 			logger.debug("*******Rahul arrival dates array length*********:" + arrivalTimes.length);
 			logger.debug("*******Rahul departures dates array length*********:" + depatureTimes.length);
-			for(MetroStationBO station : stations){
+			SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			for(int i =0; i < stations.size();i++){
+				MetroStationBO station = stations.get(i);
+				String arrivalTimeStr = arrivalTimes[i];
+				String departureTimeStr = depatureTimes[i];
 				
+				Date arrivalTime = null;
+				Date departureTime = null;
+				if(!arrivalTimeStr.equals("")){
+					arrivalTime = df.parse(arrivalTimeStr);
+				}
+				if(!departureTimeStr.equals("")){
+					departureTime = df.parse(departureTimeStr);
+				}
+				
+				TrainScheduleTimingBO timing = new TrainScheduleTimingBO(null, station, arrivalTime, departureTime);
+				timings.add(timing);
 			}
+			scheduleService.createOrUpdateTrainSchedule(2, timings);
+		}
+		catch(ParseException e){
+			e.printStackTrace();
+			assertTrue(false);
 		}
 		catch(MetroSystemServiceException e){
 			e.printStackTrace();

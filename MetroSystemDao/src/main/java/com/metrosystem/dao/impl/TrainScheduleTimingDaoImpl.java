@@ -45,7 +45,7 @@ implements ITrainScheduleTimingDao
 	
 	   try{
 		   String query = "FROM TrainScheduleTimingDTO" +
-	                      " WHERE train.trainNumber=?" +
+	                      " WHERE trainSchedule.train.trainNumber=?" +
 				          " AND station.name=?";
 		   
 		   List<TrainScheduleTimingDTO> results = this.queryListOfEntities(query, trainNumber,stationName);

@@ -174,8 +174,9 @@ public class TrainScheduleServiceImpl implements ITrainScheduleService {
 			TrainScheduleDTO scheduleDTO = trainScheduleDao.queryByTrainNumber(trainNumber);
 			Integer scheduleId = null;
 			if(scheduleDTO == null){
+				scheduleDTO = scheduleConverter.boToDto(null, trainDTO, null);
 				scheduleId =trainScheduleDao.save(scheduleDTO);
-				scheduleDTO = scheduleConverter.boToDto(scheduleId, trainDTO, null);
+				scheduleDTO.setScheduleId(scheduleId);
 			}
 			
 			for(TrainScheduleTimingBO timingBO: timings){
