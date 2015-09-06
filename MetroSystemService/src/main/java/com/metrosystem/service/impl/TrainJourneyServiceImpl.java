@@ -1,17 +1,29 @@
 package com.metrosystem.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.metrosystem.dao.IMetroStationDao;
 import com.metrosystem.dao.IMetroTrainDao;
 import com.metrosystem.dao.ITrainJourneyDao;
+import com.metrosystem.dao.ITrainJourneyMonitorDao;
+import com.metrosystem.dao.ITrainScheduleDao;
+import com.metrosystem.dao.ITrainScheduleTimingDao;
+import com.metrosystem.dao.beans.MetroStationDTO;
 import com.metrosystem.dao.beans.MetroTrainDTO;
 import com.metrosystem.dao.beans.RouteDTO;
 import com.metrosystem.dao.beans.TrainJourneyDTO;
+import com.metrosystem.dao.beans.TrainJourneyMonitorDTO;
+import com.metrosystem.dao.beans.TrainScheduleDTO;
+import com.metrosystem.dao.beans.TrainScheduleTimingDTO;
+import com.metrosystem.dao.exception.MetroSystemDaoException;
 import com.metrosystem.service.ITrainJourneyService;
 import com.metrosystem.service.beans.MetroTrainBO;
 import com.metrosystem.service.beans.RouteBO;
@@ -21,6 +33,7 @@ import com.metrosystem.service.exception.ServiceValidationException;
 import com.metrosystem.service.utils.MetroTrainBoDtoConverter;
 import com.metrosystem.service.utils.RouteBoDtoConverter;
 import com.metrosystem.service.utils.TrainJourneyBoDtoConverter;
+import com.metrosystem.service.utils.TrainJourneyMonitorBoDtoConverter;
 
 @Component("trainJourneyService")
 @Transactional(readOnly=true,rollbackFor={Exception.class})
@@ -31,8 +44,24 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 	private IMetroTrainDao trainDao;
 	
 	@Autowired
+	@Qualifier("stationDao")
+	private IMetroStationDao stationDao;
+	
+	@Autowired
 	@Qualifier("trainJourneyDao")
 	private ITrainJourneyDao trainJourneyDao;
+	
+	@Autowired
+	@Qualifier("trainScheduleDao")
+	private ITrainScheduleDao trainScheduleDao;
+	
+	@Autowired
+	@Qualifier("trainScheduleTimingDao")
+	private ITrainScheduleTimingDao trainScheduleTimingDao;
+	
+	@Autowired
+	@Qualifier("trainJourneyMonitorDao")
+	private ITrainJourneyMonitorDao trainJourneyMonitorDao;
 	
 	@Autowired
 	@Qualifier("trainBoDtoConverter")
@@ -45,6 +74,10 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 	@Autowired
 	@Qualifier("routeBoDtoConverter")
 	private RouteBoDtoConverter routeBoDtoConverter;
+	
+	@Autowired
+	@Qualifier("trainJourneyMonitorBoDtoConverter")
+	private TrainJourneyMonitorBoDtoConverter monitorBoDtoConverter;
 	
 	@Override
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
@@ -61,6 +94,18 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 				throw new ServiceValidationException("No route defined for train with number: " + trainNumber);
 			}
 			
+			//Check if journey is being scheduled before its scheduled time
+			List<MetroStationDTO> stations = stationDao.queryStationsForRouteOrderedBySequence(routeDTO.getName());
+			if(stations == null || stations.size() == 0){
+				throw new ServiceValidationException("No stations exist for route: " + routeDTO.getName());
+			}
+			
+			MetroStationDTO firstStation = stations.get(0);
+			
+			/*TrainScheduleTimingDTO firstStationTiming = trainScheduleTimingDao.queryForStation(trainNumber, firstStation.getName());
+			if(scheduleStartTime.compareTo(firstStationTiming.getDepartureTime()) < 0){
+				throw new ServiceValidationException("Cannot schedule the journey before its scheduled departure time: " + firstStationTiming.getDepartureTime());
+			}*/
 			
 			//Check if journey has already been scheduled at same time
 			TrainJourneyDTO existingJourney = trainJourneyDao.queryJourneyByScheduleTime(trainNumber, scheduleStartTime);
@@ -71,12 +116,65 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 			TrainJourneyDTO journeyDTO = trainJourneyBoDtoConverter.
 					                          boToDto(null, scheduleStartTime, train,null,null);
 			
-			return trainJourneyDao.save(journeyDTO);
+			Integer journeyId =  trainJourneyDao.save(journeyDTO);
+			journeyDTO.setJourneyId(journeyId);
+			createMonitorsForScheduledJourney(journeyDTO);
+			
+			
+			return journeyId;
 		}
 		catch(Throwable e){
 			throw new MetroSystemServiceException(e);
 		}
 
+	}
+	
+	private void createMonitorsForScheduledJourney(TrainJourneyDTO trainJourney) 
+			throws MetroSystemDaoException, ServiceValidationException 
+	{
+		
+		//Get the train schedule
+		MetroTrainDTO train = trainJourney.getTrain();
+		TrainScheduleDTO trainSchedule = trainScheduleDao.queryByTrainNumber(train.getTrainNumber());
+		
+		if(trainSchedule == null){
+			throw new ServiceValidationException("No schedule has been defined for the train: " + train.getTrainNumber());
+		}
+		
+	    List<TrainScheduleTimingDTO> timings = trainSchedule.getTimings();
+	    Date beginningScheduleTime = new Date(trainJourney.getScheduledStartTime().getTime());  
+	    if(timings != null && timings.size() > 0){
+	    	Date lastTime = timings.get(0).getDepartureTime();
+	    	Calendar calendar = Calendar.getInstance();
+	    	calendar.setTime(beginningScheduleTime);
+	    	for(int i=0;i < timings.size();i++){
+	    		TrainScheduleTimingDTO timingDTO = timings.get(i);
+	    		Date timingArrivalTime = timingDTO.getArrivalTime();
+	    		Date timingDepartureTime = timingDTO.getDepartureTime();
+	    		Date scheduledArrivalTime = null;
+	    		Date scheduledDepartureTime = null;
+	    		if(timingArrivalTime != null){
+	    			calendar.add(Calendar.MILLISECOND, (int)getDateDifference(timingArrivalTime, lastTime, TimeUnit.MILLISECONDS));
+	    			scheduledArrivalTime = calendar.getTime();
+	    			lastTime = timingArrivalTime;
+	    		}
+	    		
+	    		if(timingDepartureTime != null){
+	    			calendar.add(Calendar.MILLISECOND, (int)getDateDifference(timingDepartureTime, lastTime, TimeUnit.MILLISECONDS));
+	    		    scheduledDepartureTime = calendar.getTime();
+	    		    lastTime = timingDepartureTime;
+	    		}
+	    		
+	    		TrainJourneyMonitorDTO monitor = monitorBoDtoConverter.
+	    				                           boToDto(null, 
+	    				                        		   trainJourney, 
+	    				                        		   timingDTO.getStation(), 
+	    				                        		   scheduledArrivalTime, scheduledDepartureTime, 
+	    				                        		   null, null);
+	    		
+	    		trainJourneyMonitorDao.save(monitor);
+	    	}
+	    }
 	}
 
 	@Override
@@ -166,6 +264,13 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 		catch(Throwable e){
 			throw new MetroSystemServiceException(e);
 		}	
+	}
+	
+	private long getDateDifference(Date date1, Date date2,TimeUnit timeUinit){
+		
+		long diff = date1.getTime()-date2.getTime();
+		
+		return timeUinit.convert(diff, TimeUnit.MILLISECONDS);
 	}
 
 }

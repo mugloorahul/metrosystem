@@ -205,4 +205,50 @@ public class TrainScheduleServiceImpl implements ITrainScheduleService {
 		}
 	}
 
+	@Override
+	public List<TrainScheduleTimingBO> findNextStationsTimings(int trainNumber,String stationName) throws MetroSystemServiceException {
+		
+		try{
+			//Validate the train first
+			MetroTrainDTO train = trainDao.queryTrainByNumber(trainNumber);
+			if(train == null){
+				throw new ServiceValidationException("Invalid train number. No train exusts with number: " + trainNumber);
+			}
+			//Validate the station
+			MetroStationDTO existngStation = stationDao.queryStationByName(stationName);
+			if(existngStation == null){
+				throw new ServiceValidationException("Invalid station name. No station exists with name: " + stationName);
+			}
+			
+			List<TrainScheduleTimingDTO> timingDTOs = scheduleTimingDao.queryNextStationsTimings(trainNumber, stationName);
+			List<TrainScheduleTimingBO> timingBOs = new ArrayList<TrainScheduleTimingBO>();
+			
+			if(timingDTOs == null || timingDTOs.size() == 0){
+				return timingBOs;
+			}
+			
+			for(TrainScheduleTimingDTO timingDTO : timingDTOs){
+				MetroStationDTO stationDTO = timingDTO.getStation();
+				MetroStationBO stationBO = stationBoDtoConverter.dtoToBo(stationDTO.getStationId(), 
+						                                                 stationDTO.getName(), 
+						                                                 stationDTO.getLocation().getLatitude(), 
+						                                                 stationDTO.getLocation().getLongitude());
+				
+				TrainScheduleTimingBO timingBO = scheduleTimingConverter.
+						                            dtoToBo(timingDTO.getTimingId(), 
+						                            		null, 
+						                            		stationBO,
+						                            		timingDTO.getArrivalTime(), 
+						                            		timingDTO.getDepartureTime());
+				
+				timingBOs.add(timingBO);
+			}
+			
+			return timingBOs;
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+	}
+
 }

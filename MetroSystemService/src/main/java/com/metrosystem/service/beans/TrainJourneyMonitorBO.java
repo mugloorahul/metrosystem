@@ -31,6 +31,13 @@ public class TrainJourneyMonitorBO {
 		this.actualDepartureTime = actualDepartureTime;
 	}
 
+	public TrainJourneyMonitorBO(TrainJourneyBO trainJourney, MetroStationBO station, Date scheduledArrivalTime, Date scheduledDepartureTime){
+    	this.trainJourney= trainJourney;
+    	this.station=station;
+    	this.scheduledArrivalTime=scheduledArrivalTime;
+    	this.scheduledDepartureTime=scheduledDepartureTime;
+    }
+	
 	/**
 	 * @return the monitorId
 	 */

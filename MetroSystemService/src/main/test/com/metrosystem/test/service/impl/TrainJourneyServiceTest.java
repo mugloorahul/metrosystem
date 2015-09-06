@@ -39,8 +39,8 @@ public class TrainJourneyServiceTest {
 		
 		try{
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.HOUR, 2);
-			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.HOUR_OF_DAY, 21);
+			calendar.set(Calendar.MINUTE, 50);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND,0);
 			Integer journeyId = journeyService.scheduleTrainJourney(2, calendar.getTime());
@@ -57,8 +57,8 @@ public class TrainJourneyServiceTest {
 		
 		try{
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.HOUR, 2);
-			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.HOUR_OF_DAY, 21);
+			calendar.set(Calendar.MINUTE, 50);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND,0);
 			Integer journeyId = journeyService.scheduleTrainJourney(2, calendar.getTime());

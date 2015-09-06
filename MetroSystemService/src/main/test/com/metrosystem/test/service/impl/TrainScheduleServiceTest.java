@@ -58,6 +58,7 @@ public class TrainScheduleServiceTest {
 		}
 	}
 	
+	@Test
 	public void createOrUpdateTrainSchedule(){
 		
 		try{
@@ -137,6 +138,19 @@ public class TrainScheduleServiceTest {
 		catch(ParseException e){
 			e.printStackTrace();
 			assertTrue(false);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void findNextStationsTimings(){
+		
+		try{
+			List<TrainScheduleTimingBO> timings = scheduleService.findNextStationsTimings(2, "New Delhi");
+			assertTrue(timings != null && timings.size() > 0);
 		}
 		catch(MetroSystemServiceException e){
 			e.printStackTrace();

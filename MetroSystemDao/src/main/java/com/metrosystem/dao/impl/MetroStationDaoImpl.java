@@ -41,10 +41,10 @@ public class MetroStationDaoImpl extends MetroSystemDaoImpl<Integer, MetroStatio
 	public List<MetroStationDTO> queryStationsForRouteOrderedBySequence(String routeName) throws MetroSystemDaoException {
 		
 		try{
-			String query = "SELECT station " + 
-		                   " FROM StationRouteDTO" + 
-					       " WHERE route.name = ? " +
-		                   " ORDER BY sequence";
+			String query = "SELECT sr.station " + 
+		                   " FROM StationRouteDTO sr" + 
+					       " WHERE sr.route.name = ? " +
+		                   " ORDER BY sr.sequence";
 			
 			return this.queryListOfEntities(query, routeName);
 		}

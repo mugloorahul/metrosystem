@@ -12,4 +12,6 @@ public interface ITrainScheduleService {
 	
 	public void createOrUpdateTrainSchedule(int trainNumber, List<TrainScheduleTimingBO> timings)
 	throws MetroSystemServiceException;
+	
+	public List<TrainScheduleTimingBO> findNextStationsTimings(int trainNumber, String stationName) throws MetroSystemServiceException;
 }
