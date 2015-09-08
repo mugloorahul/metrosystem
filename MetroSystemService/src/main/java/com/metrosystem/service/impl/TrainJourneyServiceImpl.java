@@ -272,7 +272,7 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 		}
 		trainJourneyMonitorDao.update(arrivalStationMonitor);
 		
-		long delay = getDateDifference(arrivalStationMonitor.getScheduledArrivalTime(), arrivalTime, TimeUnit.MILLISECONDS);
+		long delay = getDateDifference(arrivalTime,arrivalStationMonitor.getScheduledArrivalTime(), TimeUnit.MILLISECONDS);
 		if(delay > 0){
 			//Get the monitors for stations after departure station and update their scheduled arrival times and departure times accordingly
 			List<TrainJourneyMonitorDTO> monitors = trainJourneyMonitorDao.queryMonitorsForNextStations(trainNumber, arrivalStation);
@@ -292,7 +292,7 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 		departureStationMonitor.setActualDepartureTime(departureTime);
 		trainJourneyMonitorDao.update(departureStationMonitor);
 		
-		long delay = getDateDifference(departureStationMonitor.getScheduledDepartureTime(), departureTime, TimeUnit.MILLISECONDS);
+		long delay = getDateDifference(departureTime,departureStationMonitor.getScheduledDepartureTime(), TimeUnit.MILLISECONDS);
 		if(delay > 0){
 			//Get the monitors for stations after departure station and update their scheduled arrival times and departure times accordingly
 			List<TrainJourneyMonitorDTO> monitors = trainJourneyMonitorDao.queryMonitorsForNextStations(trainNumber, departureStation);
@@ -373,6 +373,21 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 				throw new ServiceValidationException("Invalid train number. No train found with number: " + trainNumber);
 			}
 			
+			RouteDTO route = train.getRoute();
+			if(route == null){
+				throw new ServiceValidationException("No route defined for train: " + trainNumber);
+			}
+			
+			//Check if valid station
+			if(stationDao.queryStationByName(arrivalStation) == null){
+				throw new ServiceValidationException("Invalid station name. No station exists with name: " + arrivalStation);
+			}
+			
+			if(stationDao.queryStationForRoute(arrivalStation, route.getName()) == null){
+				throw new ServiceValidationException("Station " + arrivalStation + " does not exist for route " + route.getName());
+			}
+			
+			
 			//Get the latest train journey
 			TrainJourneyDTO journey = trainJourneyDao.queryLatestJourneyInProgress(trainNumber);
 			if(journey == null){
@@ -397,6 +412,21 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 			if(train == null){
 				throw new ServiceValidationException("Invalid train number. No train found with number: " + trainNumber);
 			}
+			
+			RouteDTO route = train.getRoute();
+			if(route == null){
+				throw new ServiceValidationException("No route defined for train: " + trainNumber);
+			}
+			
+			//Check if valid station
+			if(stationDao.queryStationByName(departureStation) == null){
+				throw new ServiceValidationException("Invalid station name. No station exists with name: " + departureStation);
+			}
+			
+			if(stationDao.queryStationForRoute(departureStation, route.getName()) == null){
+				throw new ServiceValidationException("Station " + departureStation + " does not exist for route " + route.getName());
+			}
+			
 			
 			//Get the latest train journey
 			TrainJourneyDTO journey = trainJourneyDao.queryLatestJourneyInProgress(trainNumber);

@@ -25,12 +25,12 @@ implements ITrainJourneyMonitorDao {
 			String query = "SELECT monitor" +
 		                   " FROM TrainJourneyMonitorDTO monitor" +
 					       " INNER JOIN monitor.trainJourney journey" +
-		                   " WHERE journey.train.train_number =?" +
+		                   " WHERE journey.train.trainNumber =?" +
 					       "  AND monitor.station.name = ?" +
 		                   "  AND journey.scheduledStartTime = (" +
 					       "                                    SELECT max(scheduledStartTime)" +
 		                   "                                    FROM TrainJourneyDTO journey_inner" +
-					       "                                    WHERE journey_inner.train.trainNumber = journey.train.train_number" +
+					       "                                    WHERE journey_inner.train = journey.train" +
 		                   "                                    GROUP BY journey_inner.train" +
 					       "                                   )";
 			
@@ -50,26 +50,30 @@ implements ITrainJourneyMonitorDao {
 	public List<TrainJourneyMonitorDTO> queryMonitorsForNextStations(int trainNumber, String currentStation) throws MetroSystemDaoException {
 		
 		try{
+	
 			String query = "SELECT monitor" +
-		                   " FROM TrainJourneyMonitorDTO monitor" +
-					       "     ,TrainJourneyDTO journey" +
-		                   "     ,StationRouteDTO stationRoute" +
-					       "     ,StationRouteDTO stationRoute1" +
-		                   " WHERE journey = monitor.trainJourney" +
-					       "   AND journey.train.trainNumber=?" +
-		                   "   AND stationRoute.route = journey.train.trainNumber" +
-		                   "   AND stationRoute.route = stationRoute1.route" +
-		                   "   AND stationRoute1.station.name=?" +
-					       "   AND stationRoute.sequence > stationRoute1.sequence" +
-		                   "   AND stationRoute.station.name = monitor.station.name" +
-		                   "   AND stationRoute1.station.name = monitor.station.name" +
-		                   "   AND journey.scheduledStartTime = (" +
-					       "                                    SELECT max(scheduledStartTime)" +
-		                   "                                    FROM TrainJourneyDTO journey_inner" +
-					       "                                    WHERE journey_inner.train.trainNumber = journey.train.train_number" +
-		                   "                                    GROUP BY journey_inner.train" +
-					       "                                    )" +
-		                   " ORDER BY stationRoute.sequence";
+			               " FROM TrainJourneyMonitorDTO monitor" +
+					       " INNER JOIN monitor.trainJourney journey" +
+			               " INNER JOIN journey.train train" +
+					       " INNER JOIN train.route route " +
+			               " INNER JOIN route.stationRoutes sr " +
+					       " WHERE train.trainNumber=?" + 
+			               "   AND sr.station=monitor.station" +
+			               "   AND sr.sequence > (" +
+			               "                     SELECT sequence" +
+					       "                     FROM StationRouteDTO sr_inner" +
+			               "                     WHERE sr_inner.route = route" +
+					       "                       AND sr.station.name = ?" +
+			               "                       AND sr.station=sr_inner.station" +
+			               "                     )" +
+					       "  AND journey.scheduledStartTime=("+
+					       "                                  SELECT max(scheduledStartTime)" +
+					       "                                  FROM TrainJourneyDTO journey_inner" +
+		                   "                                  WHERE journey_inner.train = journey.train" +
+					       "                                  GROUP BY journey_inner.train" +
+		                   "                                 )"+
+					       " ORDER BY sr.sequence";
+					                        
 			
 			List<TrainJourneyMonitorDTO> monitors = this.queryListOfEntities(query, trainNumber,currentStation);
 			

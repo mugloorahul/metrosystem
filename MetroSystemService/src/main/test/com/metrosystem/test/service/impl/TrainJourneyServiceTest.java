@@ -93,8 +93,8 @@ public class TrainJourneyServiceTest {
 		
 		try{
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.HOUR, 2);
-			calendar.set(Calendar.MINUTE, 30);
+			calendar.set(Calendar.HOUR, 21);
+			calendar.set(Calendar.MINUTE, 55);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND,0);
 			journeyService.startTrainJourney(2, calendar.getTime());
@@ -110,8 +110,8 @@ public class TrainJourneyServiceTest {
 		
 		try{
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.HOUR, 1);
-			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.HOUR, 21);
+			calendar.set(Calendar.MINUTE, 45);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND,0);
 			journeyService.startTrainJourney(2, calendar.getTime());
@@ -122,7 +122,7 @@ public class TrainJourneyServiceTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void endJourney(){
 		
 		try{
@@ -139,7 +139,7 @@ public class TrainJourneyServiceTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void endJourneyBeforeStartTime(){
 		
 		try{
