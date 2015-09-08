@@ -63,8 +63,7 @@ implements ITrainJourneyMonitorDao {
 			               "                     SELECT sequence" +
 					       "                     FROM StationRouteDTO sr_inner" +
 			               "                     WHERE sr_inner.route = route" +
-					       "                       AND sr.station.name = ?" +
-			               "                       AND sr.station=sr_inner.station" +
+					       "                       AND sr_inner.station.name = ?" +
 			               "                     )" +
 					       "  AND journey.scheduledStartTime=("+
 					       "                                  SELECT max(scheduledStartTime)" +
@@ -83,6 +82,80 @@ implements ITrainJourneyMonitorDao {
 		catch(Throwable e){
 			throw new MetroSystemDaoException(e);
 		}
+	}
+
+	@Override
+	public TrainJourneyMonitorDTO queryPreviousStationMonitor(int trainNumber,String currentStation) throws MetroSystemDaoException {
+		
+		try{
+			String query = "SELECT monitor" +
+		                   " FROM TrainJourneyMonitorDTO monitor" +
+				           " INNER JOIN monitor.trainJourney journey" +
+		                   " INNER JOIN journey.train train" +
+				           " INNER JOIN train.route route " +
+		                   " INNER JOIN route.stationRoutes sr " +
+				           " WHERE train.trainNumber=?" + 
+		                   "   AND sr.station=monitor.station" +
+		                   "   AND sr.sequence = (" +
+		                   "                     SELECT sequence-1" +
+				           "                     FROM StationRouteDTO sr_inner" +
+		                   "                     WHERE sr_inner.route = route" +
+				           "                       AND sr_inner.station.name = ?" +
+		                   "                     )" +
+				           "  AND journey.scheduledStartTime=("+
+				           "                                  SELECT max(scheduledStartTime)" +
+				           "                                  FROM TrainJourneyDTO journey_inner" +
+	                       "                                  WHERE journey_inner.train = journey.train" +
+				           "                                  GROUP BY journey_inner.train" +
+	                       "                                 )";
+			
+			List<TrainJourneyMonitorDTO> results = this.queryListOfEntities(query, trainNumber,currentStation);
+			if(results == null || results.size() ==0){
+				return null;
+			}
+			
+			return results.get(0);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+
+	@Override
+	public TrainJourneyMonitorDTO queryNextStationMonitor(int trainNumber,String currentStation) throws MetroSystemDaoException {
+
+		try{
+			String query = "SELECT monitor" +
+		                   " FROM TrainJourneyMonitorDTO monitor" +
+				           " INNER JOIN monitor.trainJourney journey" +
+		                   " INNER JOIN journey.train train" +
+				           " INNER JOIN train.route route " +
+		                   " INNER JOIN route.stationRoutes sr " +
+				           " WHERE train.trainNumber=?" + 
+		                   "   AND sr.station=monitor.station" +
+		                   "   AND sr.sequence = (" +
+		                   "                     SELECT sequence+1" +
+				           "                     FROM StationRouteDTO sr_inner" +
+		                   "                     WHERE sr_inner.route = route" +
+				           "                       AND sr_inner.station.name = ?" +
+		                   "                     )" +
+				           "  AND journey.scheduledStartTime=("+
+				           "                                  SELECT max(scheduledStartTime)" +
+				           "                                  FROM TrainJourneyDTO journey_inner" +
+	                       "                                  WHERE journey_inner.train = journey.train" +
+				           "                                  GROUP BY journey_inner.train" +
+	                       "                                 )";
+			
+			List<TrainJourneyMonitorDTO> results = this.queryListOfEntities(query, trainNumber,currentStation);
+			if(results == null || results.size() ==0){
+				return null;
+			}
+			
+			return results.get(0);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}		
 	}
 
 

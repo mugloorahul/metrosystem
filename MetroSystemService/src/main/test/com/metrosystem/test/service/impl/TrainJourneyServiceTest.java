@@ -93,7 +93,7 @@ public class TrainJourneyServiceTest {
 		
 		try{
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.HOUR, 21);
+			calendar.set(Calendar.HOUR_OF_DAY, 21);
 			calendar.set(Calendar.MINUTE, 55);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND,0);
@@ -110,7 +110,7 @@ public class TrainJourneyServiceTest {
 		
 		try{
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.HOUR, 21);
+			calendar.set(Calendar.HOUR_OF_DAY, 21);
 			calendar.set(Calendar.MINUTE, 45);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND,0);

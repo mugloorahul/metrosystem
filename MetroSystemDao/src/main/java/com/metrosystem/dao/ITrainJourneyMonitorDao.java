@@ -10,4 +10,8 @@ public interface ITrainJourneyMonitorDao extends IMetroSystemDao<Integer, TrainJ
 	public TrainJourneyMonitorDTO queryMonitorForStation(int trainNumber,String stationName) throws MetroSystemDaoException;
 	
 	public List<TrainJourneyMonitorDTO> queryMonitorsForNextStations(int trainNumber, String currentStation) throws MetroSystemDaoException;
+
+    public TrainJourneyMonitorDTO queryPreviousStationMonitor(int trainNumber, String currentStation) throws MetroSystemDaoException;
+    
+    public TrainJourneyMonitorDTO queryNextStationMonitor(int trainNumber, String currentStation) throws MetroSystemDaoException;
 }

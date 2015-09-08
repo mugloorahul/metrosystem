@@ -307,16 +307,22 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 		for(TrainJourneyMonitorDTO monitor : monitors){
 			Date scheduledArrivalTime = monitor.getScheduledArrivalTime();
 			Date scheduledDepartureTime = monitor.getScheduledDepartureTime();
-			arrivalTimeCalendar.setTime(scheduledArrivalTime);
-			departureTimeCalendar.setTime(scheduledDepartureTime);
-			arrivalTimeCalendar.add(Calendar.MILLISECOND, (int)delay);
-			departureTimeCalendar.add(Calendar.MILLISECOND,(int)delay);
-			monitor.setScheduledArrivalTime(arrivalTimeCalendar.getTime());
-			if(arrivalTimeCalendar.getTime().compareTo(departureTimeCalendar.getTime()) >= 0){
-				departureTimeCalendar.setTime(arrivalTimeCalendar.getTime());
-				departureTimeCalendar.add(Calendar.MILLISECOND, (int)getDateDifference(scheduledDepartureTime, scheduledArrivalTime, TimeUnit.MILLISECONDS));
+			if(scheduledArrivalTime != null){
+				arrivalTimeCalendar.setTime(scheduledArrivalTime);
+				arrivalTimeCalendar.add(Calendar.MILLISECOND, (int)delay);
+				monitor.setScheduledArrivalTime(arrivalTimeCalendar.getTime());
 			}
-			monitor.setScheduledDepartureTime(departureTimeCalendar.getTime());
+			if(scheduledDepartureTime != null){
+				departureTimeCalendar.setTime(scheduledDepartureTime);
+				if(arrivalTimeCalendar.getTime().compareTo(scheduledDepartureTime) >= 0){
+					departureTimeCalendar.setTime(arrivalTimeCalendar.getTime());
+					departureTimeCalendar.add(Calendar.MILLISECOND, (int)getDateDifference(scheduledDepartureTime, scheduledArrivalTime, TimeUnit.MILLISECONDS));
+				    
+				}
+				monitor.setScheduledDepartureTime(departureTimeCalendar.getTime());
+			}
+
+			
 			trainJourneyMonitorDao.update(monitor);
 		}
 	}
@@ -394,6 +400,18 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 				throw new ServiceValidationException("No journey in progress found for train with number: " + trainNumber);				
 			}
 			
+			//Check if the train has departed from previous station
+			TrainJourneyMonitorDTO previousMonitor = trainJourneyMonitorDao.queryPreviousStationMonitor(trainNumber, arrivalStation);
+			Date prevStationDepartureTime = previousMonitor.getActualDepartureTime();
+			if(prevStationDepartureTime == null){
+				throw new ServiceValidationException("Train cannot arrive at station" + arrivalStation + " without departing from" +
+						" previous station " + previousMonitor.getStation().getName());
+			}
+			if(arrivalTime.compareTo(prevStationDepartureTime) <= 0){
+				throw new ServiceValidationException("Train cannot arrive before previous station " + previousMonitor.getStation().getName() +
+						"departure time: " + prevStationDepartureTime);
+			}
+			
 			//Update the monitor for arrival station
 			updateMonitorsForArrival(trainNumber, arrivalStation, arrivalTime);
 			
@@ -432,6 +450,17 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 			TrainJourneyDTO journey = trainJourneyDao.queryLatestJourneyInProgress(trainNumber);
 			if(journey == null){
 				throw new ServiceValidationException("No journey in progress found for train with number: " + trainNumber);				
+			}
+			
+			//Query this station monitor to check if the station has arrived
+			TrainJourneyMonitorDTO monitor = trainJourneyMonitorDao.queryMonitorForStation(trainNumber, departureStation);
+			Date arrivalTime = monitor.getActualArrivalTime();
+			if(arrivalTime == null){
+				throw new ServiceValidationException("Train:" + trainNumber + " cannot depart from station " + departureStation + " as it is yet to arrive.");
+			}
+			
+			if(departureTime.compareTo(monitor.getScheduledDepartureTime()) < 0){
+				throw new ServiceValidationException("Train:" + trainNumber + " cannot depart before its scheduled departure time:" + monitor.getScheduledDepartureTime());
 			}
 			
 			//Update the monitor for arrival station
