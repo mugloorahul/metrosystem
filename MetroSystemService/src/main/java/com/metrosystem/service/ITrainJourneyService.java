@@ -14,4 +14,8 @@ public interface ITrainJourneyService {
     public void startTrainJourney(int trainNumber,Date startTime) throws MetroSystemServiceException;
     
     public void finishTrainJourney(int trainNumber,Date endTime) throws MetroSystemServiceException;
+    
+    public void arriveAtStation(int trainNumber, String arrivalStation, Date arrivalTime) throws MetroSystemServiceException;
+    
+    public void departFromStation(int trainNumber, String departureStation, Date departureTime) throws MetroSystemServiceException;
 }

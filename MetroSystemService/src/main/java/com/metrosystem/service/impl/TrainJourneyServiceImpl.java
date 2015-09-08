@@ -102,10 +102,21 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 			
 			MetroStationDTO firstStation = stations.get(0);
 			
-			/*TrainScheduleTimingDTO firstStationTiming = trainScheduleTimingDao.queryForStation(trainNumber, firstStation.getName());
-			if(scheduleStartTime.compareTo(firstStationTiming.getDepartureTime()) < 0){
-				throw new ServiceValidationException("Cannot schedule the journey before its scheduled departure time: " + firstStationTiming.getDepartureTime());
-			}*/
+			TrainScheduleTimingDTO firstStationTiming = trainScheduleTimingDao.queryForStation(trainNumber, firstStation.getName());
+			Calendar actualScheduleCalendar = Calendar.getInstance();
+			actualScheduleCalendar.setTime(firstStationTiming.getDepartureTime());
+			
+			Calendar scheduleCalendar = Calendar.getInstance();
+			scheduleCalendar.setTime(scheduleStartTime);
+			actualScheduleCalendar.set(Calendar.DAY_OF_MONTH, scheduleCalendar.get(Calendar.DAY_OF_MONTH));
+			actualScheduleCalendar.set(Calendar.MONTH, scheduleCalendar.get(Calendar.MONTH));
+			actualScheduleCalendar.set(Calendar.YEAR, scheduleCalendar.get(Calendar.YEAR));
+			Date actualScheduleTime = actualScheduleCalendar.getTime();
+			
+			
+			if(scheduleStartTime.compareTo(actualScheduleTime) < 0){
+				throw new ServiceValidationException("Cannot schedule the journey before its scheduled departure time: " + actualScheduleTime);
+			}
 			
 			//Check if journey has already been scheduled at same time
 			TrainJourneyDTO existingJourney = trainJourneyDao.queryJourneyByScheduleTime(trainNumber, scheduleStartTime);
@@ -147,6 +158,7 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 	    	Date lastTime = timings.get(0).getDepartureTime();
 	    	Calendar calendar = Calendar.getInstance();
 	    	calendar.setTime(beginningScheduleTime);
+	    	String currentStationFlag = "Y";
 	    	for(int i=0;i < timings.size();i++){
 	    		TrainScheduleTimingDTO timingDTO = timings.get(i);
 	    		Date timingArrivalTime = timingDTO.getArrivalTime();
@@ -172,7 +184,9 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 	    				                        		   scheduledArrivalTime, scheduledDepartureTime, 
 	    				                        		   null, null);
 	    		
+	    		monitor.setCurrentStationFlag(currentStationFlag);
 	    		trainJourneyMonitorDao.save(monitor);
+	    		currentStationFlag= "N";
 	    	}
 	    }
 	}
@@ -232,12 +246,82 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 			}
 			journey.setActualStartTime(startTime);
 			trainJourneyDao.update(journey);
+			
+			//Get the monitor for the first station and update its actual departure time
+			MetroStationDTO firstStation = stationDao.queryStationForRouteAtSequence(trainDTO.getRoute().getName(), 1);
+			updateMonitorsForDeparture(trainNumber,firstStation.getName(), startTime);
+			
 		}
 		catch(Throwable e){
 			throw new MetroSystemServiceException(e);
 		}
 	}
 
+	
+	private void updateMonitorsForArrival(int trainNumber,String arrivalStation,Date arrivalTime) throws MetroSystemDaoException{
+		
+		//First update the current station flag for arrival station to Y and also update the arrival time
+		TrainJourneyMonitorDTO arrivalStationMonitor = trainJourneyMonitorDao.queryMonitorForStation(trainNumber, arrivalStation);
+		arrivalStationMonitor.setCurrentStationFlag("Y");
+		arrivalStationMonitor.setActualArrivalTime(arrivalTime);
+		if(arrivalTime.compareTo(arrivalStationMonitor.getScheduledDepartureTime()) >= 0){
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(arrivalTime);
+			calendar.add(Calendar.MILLISECOND, 
+					     (int)getDateDifference(arrivalStationMonitor.getScheduledDepartureTime(),arrivalStationMonitor.getScheduledArrivalTime(), TimeUnit.MILLISECONDS));
+		}
+		trainJourneyMonitorDao.update(arrivalStationMonitor);
+		
+		long delay = getDateDifference(arrivalStationMonitor.getScheduledArrivalTime(), arrivalTime, TimeUnit.MILLISECONDS);
+		if(delay > 0){
+			//Get the monitors for stations after departure station and update their scheduled arrival times and departure times accordingly
+			List<TrainJourneyMonitorDTO> monitors = trainJourneyMonitorDao.queryMonitorsForNextStations(trainNumber, arrivalStation);
+			updateNextStationsMonitors(monitors, delay);
+		}		
+	}
+	
+	private void updateMonitorsForDeparture(int trainNumber,String departureStation,Date departureTime) throws MetroSystemDaoException, ServiceValidationException{
+		
+		//First update the current station flag for departing station to N and also update the departure time
+		TrainJourneyMonitorDTO departureStationMonitor = trainJourneyMonitorDao.queryMonitorForStation(trainNumber, departureStation);
+		if(departureTime.compareTo(departureStationMonitor.getScheduledDepartureTime()) < 0){
+			throw new ServiceValidationException("Train cannot depart from station " + departureStation + " before scheduled departure time: " + 
+		                                         departureStationMonitor.getScheduledDepartureTime());
+		}
+		departureStationMonitor.setCurrentStationFlag("N");
+		departureStationMonitor.setActualDepartureTime(departureTime);
+		trainJourneyMonitorDao.update(departureStationMonitor);
+		
+		long delay = getDateDifference(departureStationMonitor.getScheduledDepartureTime(), departureTime, TimeUnit.MILLISECONDS);
+		if(delay > 0){
+			//Get the monitors for stations after departure station and update their scheduled arrival times and departure times accordingly
+			List<TrainJourneyMonitorDTO> monitors = trainJourneyMonitorDao.queryMonitorsForNextStations(trainNumber, departureStation);
+			updateNextStationsMonitors(monitors, delay);
+		}
+		
+	}
+	
+	private void updateNextStationsMonitors(List<TrainJourneyMonitorDTO> monitors,long delay) throws MetroSystemDaoException{
+		Calendar arrivalTimeCalendar = Calendar.getInstance();
+		Calendar departureTimeCalendar = Calendar.getInstance();
+		for(TrainJourneyMonitorDTO monitor : monitors){
+			Date scheduledArrivalTime = monitor.getScheduledArrivalTime();
+			Date scheduledDepartureTime = monitor.getScheduledDepartureTime();
+			arrivalTimeCalendar.setTime(scheduledArrivalTime);
+			departureTimeCalendar.setTime(scheduledDepartureTime);
+			arrivalTimeCalendar.add(Calendar.MILLISECOND, (int)delay);
+			departureTimeCalendar.add(Calendar.MILLISECOND,(int)delay);
+			monitor.setScheduledArrivalTime(arrivalTimeCalendar.getTime());
+			if(arrivalTimeCalendar.getTime().compareTo(departureTimeCalendar.getTime()) >= 0){
+				departureTimeCalendar.setTime(arrivalTimeCalendar.getTime());
+				departureTimeCalendar.add(Calendar.MILLISECOND, (int)getDateDifference(scheduledDepartureTime, scheduledArrivalTime, TimeUnit.MILLISECONDS));
+			}
+			monitor.setScheduledDepartureTime(departureTimeCalendar.getTime());
+			trainJourneyMonitorDao.update(monitor);
+		}
+	}
+	
+	
 	@Override
 	@Transactional(readOnly=false,rollbackFor={Exception.class})
 	public void finishTrainJourney(int trainNumber,Date endTime) throws MetroSystemServiceException {
@@ -255,11 +339,18 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 			}
 
 			if(journey.getActualStartTime().compareTo(endTime) > 0){
-				throw new ServiceValidationException("Train cannot end before start time: "+ journey.getActualStartTime());
+				throw new ServiceValidationException("Train cannot end its journey before start time: "+ journey.getActualStartTime());
 			}
 			
 			journey.setActualEndTime(endTime);
 			trainJourneyDao.update(journey);
+			
+			//Get the last station for the route
+			MetroStationDTO lastStation = stationDao.queryLastStationForRoute(trainDTO.getRoute().getName());
+			TrainJourneyMonitorDTO lastStationMonitorDTO = trainJourneyMonitorDao.queryMonitorForStation(trainNumber, lastStation.getName());
+			lastStationMonitorDTO.setActualArrivalTime(endTime);
+			lastStationMonitorDTO.setCurrentStationFlag("Y");
+			trainJourneyMonitorDao.update(lastStationMonitorDTO);
 		}
 		catch(Throwable e){
 			throw new MetroSystemServiceException(e);
@@ -271,6 +362,55 @@ public class TrainJourneyServiceImpl implements ITrainJourneyService {
 		long diff = date1.getTime()-date2.getTime();
 		
 		return timeUinit.convert(diff, TimeUnit.MILLISECONDS);
+	}
+
+	@Override
+	public void arriveAtStation(int trainNumber, String arrivalStation, Date arrivalTime) throws MetroSystemServiceException {
+		
+		try{
+			MetroTrainDTO train = trainDao.queryTrainByNumber(trainNumber);
+			if(train == null){
+				throw new ServiceValidationException("Invalid train number. No train found with number: " + trainNumber);
+			}
+			
+			//Get the latest train journey
+			TrainJourneyDTO journey = trainJourneyDao.queryLatestJourneyInProgress(trainNumber);
+			if(journey == null){
+				throw new ServiceValidationException("No journey in progress found for train with number: " + trainNumber);				
+			}
+			
+			//Update the monitor for arrival station
+			updateMonitorsForArrival(trainNumber, arrivalStation, arrivalTime);
+			
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}
+		
+	}
+
+	@Override
+	public void departFromStation(int trainNumber, String departureStation,Date departureTime) throws MetroSystemServiceException {
+		
+		try{
+			MetroTrainDTO train = trainDao.queryTrainByNumber(trainNumber);
+			if(train == null){
+				throw new ServiceValidationException("Invalid train number. No train found with number: " + trainNumber);
+			}
+			
+			//Get the latest train journey
+			TrainJourneyDTO journey = trainJourneyDao.queryLatestJourneyInProgress(trainNumber);
+			if(journey == null){
+				throw new ServiceValidationException("No journey in progress found for train with number: " + trainNumber);				
+			}
+			
+			//Update the monitor for arrival station
+			updateMonitorsForDeparture(trainNumber, departureStation, departureTime);
+			
+		}
+		catch(Throwable e){
+			throw new MetroSystemServiceException(e);
+		}		
 	}
 
 }

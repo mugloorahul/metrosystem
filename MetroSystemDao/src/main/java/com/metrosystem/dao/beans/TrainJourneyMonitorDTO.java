@@ -93,7 +93,7 @@ public class TrainJourneyMonitorDTO implements Serializable{
 	/**
 	 * @return the currentStationFlag
 	 */
-	@Column(name="current_station_flag",nullable=false,insertable=false)
+	@Column(name="current_station_flag",nullable=false)
 	public String getCurrentStationFlag() {
 		return currentStationFlag;
 	}

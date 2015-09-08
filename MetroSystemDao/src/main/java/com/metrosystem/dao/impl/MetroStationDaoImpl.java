@@ -54,19 +54,63 @@ public class MetroStationDaoImpl extends MetroSystemDaoImpl<Integer, MetroStatio
 	}
 
 	@Override
-	public StationRouteDTO queryStationForRoute(String stationName,String routeName) throws MetroSystemDaoException {
+	public MetroStationDTO queryStationForRoute(String stationName,String routeName) throws MetroSystemDaoException {
 		
 		try{
-			String query =  " FROM StationRouteDTO" + 
-					       " WHERE route.name=? " +
-		                   "  AND station.name=?";
+			String query =  " FROM StationRouteDTO sr" + 
+					        " WHERE sr.route.name=? " +
+		                    "  AND sr.station.name=?";
 			
 			List<?> result= this.queryListOfEntities(query, routeName,stationName);
 			if(result == null || result.size() == 0){
 				return null;
 			}
 			
-			return (StationRouteDTO)result.get(0);
+			return ((StationRouteDTO)result.get(0)).getStation();
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+
+	@Override
+	public MetroStationDTO queryStationForRouteAtSequence(String routeName, int sequence) throws MetroSystemDaoException {
+		
+		try{
+			String query =  " FROM StationRouteDTO sr" + 
+					        " WHERE sr.route.name=? " +
+					        "  AND sr.sequence=?";
+			
+			List<?> result= this.queryListOfEntities(query, routeName,sequence);
+			if(result == null || result.size() == 0){
+				return null;
+			}
+			
+			return ((StationRouteDTO)result.get(0)).getStation();
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+
+	@Override
+	public MetroStationDTO queryLastStationForRoute(String routeName) throws MetroSystemDaoException {
+	    
+		try{
+			String query = "SELECT sr" +
+		                   " FROM StationRouteDTO sr" +
+					       " WHERE sr.route.name=?" +
+		                   "   AND sr.sequence =(" +
+					       "                     SELECT max(sequence)" +
+		                   "                     FROM StationRouteDTO sr_inner" +
+					       "                     WHERE sr.route = sr_inner.route";
+			
+			List<?> result= this.queryListOfEntities(query, routeName);
+			if(result == null || result.size() == 0){
+				return null;
+			}
+			
+			return ((StationRouteDTO)result.get(0)).getStation();
 		}
 		catch(Throwable e){
 			throw new MetroSystemDaoException(e);

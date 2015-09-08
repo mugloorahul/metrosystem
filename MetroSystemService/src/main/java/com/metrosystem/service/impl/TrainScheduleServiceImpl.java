@@ -212,7 +212,7 @@ public class TrainScheduleServiceImpl implements ITrainScheduleService {
 			//Validate the train first
 			MetroTrainDTO train = trainDao.queryTrainByNumber(trainNumber);
 			if(train == null){
-				throw new ServiceValidationException("Invalid train number. No train exusts with number: " + trainNumber);
+				throw new ServiceValidationException("Invalid train number. No train exists with number: " + trainNumber);
 			}
 			//Validate the station
 			MetroStationDTO existngStation = stationDao.queryStationByName(stationName);
