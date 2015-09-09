@@ -122,13 +122,13 @@ public class TrainJourneyServiceTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void endJourney(){
 		
 		try{
 			 Calendar calendar= Calendar.getInstance();
-			 calendar.set(Calendar.HOUR, 3);
-			 calendar.set(Calendar.MINUTE, 0);
+			 calendar.set(Calendar.HOUR_OF_DAY,22);
+			 calendar.set(Calendar.MINUTE, 30);
 			 calendar.set(Calendar.SECOND, 0);
 		   	 calendar.set(Calendar.MILLISECOND,0);
 			journeyService.finishTrainJourney(2, calendar.getTime());
@@ -139,16 +139,50 @@ public class TrainJourneyServiceTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void endJourneyBeforeStartTime(){
 		
 		try{
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.HOUR, 2);
-			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.HOUR_OF_DAY, 21);
+			calendar.set(Calendar.MINUTE, 45);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND,0);
 			journeyService.finishTrainJourney(2, calendar.getTime());
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void arriveAtStation(){
+		
+		try{
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.HOUR_OF_DAY, 22);
+			calendar.set(Calendar.MINUTE, 23);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND,0);
+			journeyService.arriveAtStation(2, "Hira Nagar", calendar.getTime());
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void departFromStation(){
+		
+		try{
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.HOUR_OF_DAY, 22);
+			calendar.set(Calendar.MINUTE, 25);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND,0);
+			journeyService.departFromStation(2, "Samba", calendar.getTime());
 		}
 		catch(MetroSystemServiceException e){
 			e.printStackTrace();

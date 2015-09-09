@@ -103,7 +103,8 @@ public class MetroStationDaoImpl extends MetroSystemDaoImpl<Integer, MetroStatio
 		                   "   AND sr.sequence =(" +
 					       "                     SELECT max(sequence)" +
 		                   "                     FROM StationRouteDTO sr_inner" +
-					       "                     WHERE sr.route = sr_inner.route";
+					       "                     WHERE sr.route = sr_inner.route" +
+		                   "                    )";
 			
 			List<?> result= this.queryListOfEntities(query, routeName);
 			if(result == null || result.size() == 0){
