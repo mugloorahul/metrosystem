@@ -1,5 +1,6 @@
 package com.metrosystem.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.metrosystem.dao.beans.TrainJourneyMonitorDTO;
@@ -14,4 +15,14 @@ public interface ITrainJourneyMonitorDao extends IMetroSystemDao<Integer, TrainJ
     public TrainJourneyMonitorDTO queryPreviousStationMonitor(int trainNumber, String currentStation) throws MetroSystemDaoException;
     
     public TrainJourneyMonitorDTO queryNextStationMonitor(int trainNumber, String currentStation) throws MetroSystemDaoException;
+
+    public List<TrainJourneyMonitorDTO> queryAllActiveMonitorsForStation(String station) throws MetroSystemDaoException;
+    
+    public List<TrainJourneyMonitorDTO> queryScheduledArrivalMonitorsForStation(String station) throws MetroSystemDaoException;
+    
+    public List<TrainJourneyMonitorDTO> queryScheduledDepartureMonitorsForStation(String station) throws MetroSystemDaoException;
+    
+    public List<TrainJourneyMonitorDTO> queryScheduledArrivalsForStation(String station, Date fromTime, Date toTime) throws MetroSystemDaoException;
+    
+    public List<TrainJourneyMonitorDTO> queryScheduledDepartureMonitorsForStation(String station, Date fromTime, Date toTime) throws MetroSystemDaoException;
 }

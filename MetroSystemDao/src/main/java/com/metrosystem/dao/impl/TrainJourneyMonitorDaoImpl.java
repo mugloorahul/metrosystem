@@ -1,5 +1,6 @@
 package com.metrosystem.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -156,6 +157,102 @@ implements ITrainJourneyMonitorDao {
 		catch(Throwable e){
 			throw new MetroSystemDaoException(e);
 		}		
+	}
+
+	@Override
+	public List<TrainJourneyMonitorDTO> queryAllActiveMonitorsForStation(String station) throws MetroSystemDaoException {
+		
+		try{
+			String query = "SELECT monitor" +
+		                   " FROM TrainJourneyMonitorDTO monitor" +
+					       " WHERE monitor.station.name = ?" +
+					       "  AND (monitor.actualArrivalTime IS NULL" +
+		                   "       OR monitor.actualDepartureTime IS NULL)";
+			
+			return this.queryListOfEntities(query, station);
+					       
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+
+	@Override
+	public List<TrainJourneyMonitorDTO> queryScheduledArrivalMonitorsForStation(String station) throws MetroSystemDaoException {
+		
+		try{
+			String query = "SELECT monitor" +
+		                   " FROM TrainJourneyMonitorDTO monitor" +
+					       " WHERE monitor.station.name = ?" +
+		                   "  AND monitor.scheduledArrivalTime IS NOT NULL" +
+					       "  AND monitor.actualArrivalTime IS NULL" +
+		                   " ORDER BY monitor.scheduledArrivalTime";
+			
+			return this.queryListOfEntities(query, station);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+
+	@Override
+	public List<TrainJourneyMonitorDTO> queryScheduledDepartureMonitorsForStation(String station) throws MetroSystemDaoException {
+		
+		try{
+			String query = "SELECT monitor" +
+		                   " FROM TrainJourneyMonitorDTO monitor" +
+					       " WHERE monitor.station.name = ?" +
+		                   "  AND monitor.scheduledDepartureTime IS NOT NULL" +
+					       "  AND monitor.actualDepartureTime IS NULL" +
+		                   " ORDER BY monitor.scheduledDepartureTime";
+			
+			return this.queryListOfEntities(query, station);
+			
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+
+	@Override
+	public List<TrainJourneyMonitorDTO> queryScheduledArrivalsForStation(String station, Date fromTime, Date toTime) throws MetroSystemDaoException {
+		
+		try{
+			String query = "SELECT monitor" +
+		                   " FROM TrainJourneyMonitorDTO monitor" +
+					       " WHERE monitor.station.name = ?" +
+		                   "  AND monitor.scheduledArrivalTime IS NOT NULL" +
+					       "  AND monitor.actualArrivalTime IS NULL" +
+		                   "  AND monitor.scheduledArrivalTime >= ?" +
+					       " AND monitor.scheduledArrivalTime <= ?" +
+		                   " ORDER BY monitor.scheduledArrivalTime";
+			
+			return this.queryListOfEntities(query, station,fromTime,toTime);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}		
+	}
+
+	@Override
+	public List<TrainJourneyMonitorDTO> queryScheduledDepartureMonitorsForStation(String station, Date fromTime, Date toTime) throws MetroSystemDaoException {
+		
+		try{
+			String query = "SELECT monitor" +
+		                   " FROM TrainJourneyMonitorDTO monitor" +
+					       " WHERE monitor.station.name = ?" +
+		                   "  AND monitor.scheduledDepartureTime IS NOT NULL" +
+					       "  AND monitor.actualDepartureTime IS NULL" +
+		                   "  AND monitor.scheduledDepartureTime >= ?" +
+					       "  AND monitor.scheduledDepartureTime <= ?" +
+		                   " ORDER BY monitor.scheduledDepartureTime";
+			
+			return this.queryListOfEntities(query, station,fromTime,toTime);
+			
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
 	}
 
 
