@@ -21,19 +21,78 @@ public class UserJourneyDaoImpl extends MetroSystemDaoImpl<Integer, UserJourneyD
 	public UserJourneyDTO queryLatestJourneyWithoutSwipeOut(String userIdentifier) throws MetroSystemDaoException{
 		
 		try{
-			String query = "SELECT userJourney" +
+			String query = "SELECT journey" +
 		                   " FROM UserJourneyDTO journey" +
 					       " INNER JOIN journey.user" +
-		                   " WHERE user.uniqueIdentifier = ?" +
+		                   " WHERE journey.user.uniqueIdentifier = ?" +
 					       " AND journey.swipeOutTime = (" +
 		                   "                                SELECT max(swipeOutTime)" +
 					       "                                FROM UserJourneyDTO journey_inner" +
 		                   "                                WHERE journey_inner.user = journey.user" +
-					       "                                  AND swipeOutTime IS NULL" +
+					       "                                  AND journey_inner.swipeOutTime IS NULL" +
 		                   "                                GROUP BY journey_inner.user" +
 					       "                            )";
 			
 			List<UserJourneyDTO> results = this.queryListOfEntities(query, userIdentifier);
+			
+			if(results == null || results.size() == 0){
+				return null;
+			}
+			
+			return results.get(0);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+
+	@Override
+	public UserJourneyDTO queryLatestSwippedInjourney(String userIdentifier) throws MetroSystemDaoException {
+		
+		try{
+			String query = "SELECT journey" +
+		                   " FROM UserJourneyDTO journey" +
+					       " INNER JOIN journey.user" +
+		                   " WHERE journey.user.uniqueIdentifier = ?" +
+					       "   AND journey.swipeInTime = (" +
+		                   "                             SELECT max(swipeInTime)" +
+					       "                             FROM UserJourneyDTO journey_inner" +
+		                   "                             WHERE journey_inner.user = journey.user" +
+					       "                               AND journey_inner.swipeOutTime IS NOT NULL" +
+		                   "                             GROUP BY journey_inner.user" +
+					       "                             )";
+			
+            List<UserJourneyDTO> results = this.queryListOfEntities(query, userIdentifier);
+			
+			if(results == null || results.size() == 0){
+				return null;
+			}
+			
+			return results.get(0);
+		}
+		catch(Throwable e){
+			throw new MetroSystemDaoException(e);
+		}
+	}
+
+	@Override
+	public UserJourneyDTO queryLatestJourneyInProgress(String userIdentifier) throws MetroSystemDaoException {
+	
+		try{
+			String query = "SELECT journey"+
+		                   " FROM UserJourneyDTO journey" +
+					       " INNER JOIN journey.user" +
+		                   " WHERE journey.user.uniqueIdentifier = ?" +
+					       "  AND journey.swipeInTime = (" +
+		                   "                            SELECT max(swipeInTime)" +
+					       "                            FROM UserJourneyDTO journey_inner" +
+		                   "                            WHERE journey.user = journey_inner.user" +
+					       "                              AND journey.boardedTime IS NOT NULL" +
+		                   "                              AND journey.alightedTime IS NULL" +
+		                   "                            GROUP BY journey_inner.user" +
+					       "                            )";
+			
+            List<UserJourneyDTO> results = this.queryListOfEntities(query, userIdentifier);
 			
 			if(results == null || results.size() == 0){
 				return null;
