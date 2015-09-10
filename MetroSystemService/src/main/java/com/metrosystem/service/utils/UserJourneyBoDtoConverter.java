@@ -16,56 +16,48 @@ import com.metrosystem.service.beans.UserJourneyBO;
 @Component("userJourneyBoDtoConverter")
 public class UserJourneyBoDtoConverter {
 
-	public UserJourneyBO dtoToBo(Integer journeyId, MetroUserBO user, Date swipeInTime,
-			                     MetroStationBO source, MetroStationBO destination)
-	{
-		
-		UserJourneyBO journey = new UserJourneyBO(user, swipeInTime, source, destination);
-		journey.setJourneyId(journeyId!= null?journeyId:0);
+	public UserJourneyDTO boToDto(Integer journeyId,MetroUserDTO user,Date swipeInTime,MetroStationDTO swipeInStation){
+		UserJourneyDTO journey = new UserJourneyDTO(user, swipeInTime, swipeInStation);
+		journey.setJourneyId(journeyId!=null?journeyId:0);
 		
 		return journey;
 	}
 	
-	public UserJourneyBO dtoToBo(Integer journeyId, MetroUserBO user, Date swipeInTime,
-                                 MetroStationBO source, MetroStationBO destination,
-                                 TrainJourneyBO trainJourney,Date actualStartTime, Date endTime,
-                                 Date scheduleTime, Date swipeOutTime)
-    {
+	public UserJourneyDTO boToDto(Integer journeyId,MetroUserDTO user,Date swipeInTime,MetroStationDTO swipeInStation,
+			                     TrainJourneyDTO trainJourney,Date swipeOutTime,MetroStationDTO swipeOutStation,Date boardedTime,Date alightedTime)
+	{
 		
-		UserJourneyBO journey = dtoToBo(journeyId, user, swipeInTime, source, destination);
-		journey.setActualStartTime(actualStartTime);
-		journey.setEndTime(endTime);
-		journey.setScheduledStartTime(scheduleTime);
-	    journey.setSwipeOutTime(swipeOutTime);
+		UserJourneyDTO journey = new UserJourneyDTO(user, swipeInTime, swipeInStation);
+		journey.setJourneyId(journeyId!=null?journeyId:0);
+		journey.setTrainJourney(trainJourney);
+		journey.setSwipeOutTime(swipeOutTime);
+		journey.setSwipeOutStation(swipeOutStation);
+		journey.setBoardedTime(boardedTime);
+		journey.setAlightedTime(alightedTime);
 		
 		return journey;
-    }
+	}
 	
-	public UserJourneyDTO boToDto(Integer journeyId, MetroUserDTO user, Date swipeInTime,
-                                 MetroStationDTO source, MetroStationDTO destination)
-    {
-
-		UserJourneyDTO journey = new UserJourneyDTO(user, swipeInTime, source, destination);
-        journey.setJourneyId(journeyId!= null?journeyId:0);
-
-        return journey;
-    }
+	public UserJourneyBO dtoToBo(Integer journeyId,MetroUserBO user,Date swipeInTime,MetroStationBO swipeInStation){
+		UserJourneyBO journey = new UserJourneyBO(user, swipeInTime, swipeInStation);
+		journey.setJourneyId(journeyId!=null?journeyId:0);
+		
+		return journey;
+	}
 	
+	public UserJourneyBO dtoToBo(Integer journeyId,MetroUserBO user,Date swipeInTime,MetroStationBO swipeInStation,
+                                 TrainJourneyBO trainJourney,Date swipeOutTime,MetroStationBO swipeOutStation,Date boardedTime,Date alightedTime)
+	{
 	
-	
-	public UserJourneyDTO boToDto(Integer journeyId, MetroUserDTO user, Date swipeInTime,
-                                  MetroStationDTO source, MetroStationDTO destination,
-                                  TrainJourneyDTO trainJourney,Date actualStartTime, Date endTime,
-                                  Date scheduleTime, Date swipeOutTime)
-    {
-
-        UserJourneyDTO journey = boToDto(journeyId, user, swipeInTime, source, destination);
-        journey.setActualStartTime(actualStartTime);
-		journey.setEndTime(endTime);
-		journey.setScheduledStartTime(scheduleTime);
-	    journey.setSwipeOutTime(swipeOutTime);
-
-        return journey;
-    }
+		UserJourneyBO journey = new UserJourneyBO(user, swipeInTime, swipeInStation);
+		journey.setJourneyId(journeyId!=null?journeyId:0);
+		journey.setTrainJourney(trainJourney);
+		journey.setSwipeOutTime(swipeOutTime);
+		journey.setSwipeOutStation(swipeOutStation);
+		journey.setBoardedTime(boardedTime);
+		journey.setAlightedTime(alightedTime);
+		
+		return journey;
+	}
 
 }

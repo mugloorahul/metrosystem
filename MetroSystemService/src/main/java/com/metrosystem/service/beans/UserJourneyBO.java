@@ -3,58 +3,34 @@ package com.metrosystem.service.beans;
 import java.util.Date;
 
 public class UserJourneyBO {
-
+	
 	private int journeyId;
-	private MetroUserBO user;
-	private TrainJourneyBO trainJourney;
-	private Date scheduledStartTime;
-	private Date actualStartTime;
-	private Date endTime;
-	private MetroStationBO sourceStation;
-	private MetroStationBO destinationStation;
-	private Date swipeInTime;
-	private Date swipeOutTime;
-	
-	/**
-	 * Default constructor
-	 */
-	public UserJourneyBO(){
-		
-	}
-
-	public UserJourneyBO(int journeyId, MetroUserBO user,
-			TrainJourneyBO trainJourney, Date scheduledStartTime,
-			Date actualStartTime, Date endTime, MetroStationBO sourceStation,
-			MetroStationBO destinationStation, Date swipeInTime,
-			Date swipeOutTime) {
-		super();
-		this.journeyId = journeyId;
-		this.user = user;
-		this.trainJourney = trainJourney;
-		this.scheduledStartTime = scheduledStartTime;
-		this.actualStartTime = actualStartTime;
-		this.endTime = endTime;
-		this.sourceStation = sourceStation;
-		this.destinationStation = destinationStation;
-		this.swipeInTime = swipeInTime;
-		this.swipeOutTime = swipeOutTime;
+    private MetroUserBO user;
+    private TrainJourneyBO trainJourney;
+    private Date swipeInTime;
+    private Date swipeOutTime;
+    private Date boardedTime;
+    private Date alightedTime;
+    private MetroStationBO swipeInStation;
+    private MetroStationBO swipeOutStation;
+    
+    
+    public UserJourneyBO(MetroUserBO user,Date swipeInTime,MetroStationBO swipeInStation) {
+		this.user=user;
+		this.swipeInTime=swipeInTime;
+		this.swipeInStation=swipeInStation;
 	}
 	
-	public UserJourneyBO(MetroUserBO user,Date swipeInTime,
-			MetroStationBO source,MetroStationBO destination)
-	{
-	  this.user=user;
-	  this.swipeInTime=swipeInTime;
-	  this.sourceStation=source;
-	  this.destinationStation=destination;
-	}
-
+	
+	
 	/**
 	 * @return the journeyId
 	 */
 	public int getJourneyId() {
 		return journeyId;
 	}
+
+
 
 	/**
 	 * @param journeyId the journeyId to set
@@ -63,12 +39,16 @@ public class UserJourneyBO {
 		this.journeyId = journeyId;
 	}
 
+
+
 	/**
 	 * @return the user
 	 */
 	public MetroUserBO getUser() {
 		return user;
 	}
+
+
 
 	/**
 	 * @param user the user to set
@@ -77,12 +57,16 @@ public class UserJourneyBO {
 		this.user = user;
 	}
 
+
+
 	/**
 	 * @return the trainJourney
 	 */
 	public TrainJourneyBO getTrainJourney() {
 		return trainJourney;
 	}
+
+
 
 	/**
 	 * @param trainJourney the trainJourney to set
@@ -91,75 +75,7 @@ public class UserJourneyBO {
 		this.trainJourney = trainJourney;
 	}
 
-	/**
-	 * @return the scheduledStartTime
-	 */
-	public Date getScheduledStartTime() {
-		return scheduledStartTime;
-	}
 
-	/**
-	 * @param scheduledStartTime the scheduledStartTime to set
-	 */
-	public void setScheduledStartTime(Date scheduledStartTime) {
-		this.scheduledStartTime = scheduledStartTime;
-	}
-
-	/**
-	 * @return the actualStartTime
-	 */
-	public Date getActualStartTime() {
-		return actualStartTime;
-	}
-
-	/**
-	 * @param actualStartTime the actualStartTime to set
-	 */
-	public void setActualStartTime(Date actualStartTime) {
-		this.actualStartTime = actualStartTime;
-	}
-
-	/**
-	 * @return the endTime
-	 */
-	public Date getEndTime() {
-		return endTime;
-	}
-
-	/**
-	 * @param endTime the endTime to set
-	 */
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-
-	/**
-	 * @return the sourceStation
-	 */
-	public MetroStationBO getSourceStation() {
-		return sourceStation;
-	}
-
-	/**
-	 * @param sourceStation the sourceStation to set
-	 */
-	public void setSourceStation(MetroStationBO sourceStation) {
-		this.sourceStation = sourceStation;
-	}
-
-	/**
-	 * @return the destinationStation
-	 */
-	public MetroStationBO getDestinationStation() {
-		return destinationStation;
-	}
-
-	/**
-	 * @param destinationStation the destinationStation to set
-	 */
-	public void setDestinationStation(MetroStationBO destinationStation) {
-		this.destinationStation = destinationStation;
-	}
 
 	/**
 	 * @return the swipeInTime
@@ -168,12 +84,16 @@ public class UserJourneyBO {
 		return swipeInTime;
 	}
 
+
+
 	/**
 	 * @param swipeInTime the swipeInTime to set
 	 */
 	public void setSwipeInTime(Date swipeInTime) {
 		this.swipeInTime = swipeInTime;
 	}
+
+
 
 	/**
 	 * @return the swipeOutTime
@@ -182,13 +102,89 @@ public class UserJourneyBO {
 		return swipeOutTime;
 	}
 
+
+
 	/**
 	 * @param swipeOutTime the swipeOutTime to set
 	 */
 	public void setSwipeOutTime(Date swipeOutTime) {
 		this.swipeOutTime = swipeOutTime;
 	}
-	
+
+
+
+	/**
+	 * @return the boardedTime
+	 */
+	public Date getBoardedTime() {
+		return boardedTime;
+	}
+
+
+
+	/**
+	 * @param boardedTime the boardedTime to set
+	 */
+	public void setBoardedTime(Date boardedTime) {
+		this.boardedTime = boardedTime;
+	}
+
+
+
+	/**
+	 * @return the alightedTime
+	 */
+	public Date getAlightedTime() {
+		return alightedTime;
+	}
+
+
+
+	/**
+	 * @param alightedTime the alightedTime to set
+	 */
+	public void setAlightedTime(Date alightedTime) {
+		this.alightedTime = alightedTime;
+	}
+
+
+
+	/**
+	 * @return the swipeInStation
+	 */
+	public MetroStationBO getSwipeInStation() {
+		return swipeInStation;
+	}
+
+
+
+	/**
+	 * @param swipeInStation the swipeInStation to set
+	 */
+	public void setSwipeInStation(MetroStationBO swipeInStation) {
+		this.swipeInStation = swipeInStation;
+	}
+
+
+
+	/**
+	 * @return the swipeOutStation
+	 */
+	public MetroStationBO getSwipeOutStation() {
+		return swipeOutStation;
+	}
+
+
+
+	/**
+	 * @param swipeOutStation the swipeOutStation to set
+	 */
+	public void setSwipeOutStation(MetroStationBO swipeOutStation) {
+		this.swipeOutStation = swipeOutStation;
+	}
+
+
+
 	@Override
 	public boolean equals(Object obj){
 		

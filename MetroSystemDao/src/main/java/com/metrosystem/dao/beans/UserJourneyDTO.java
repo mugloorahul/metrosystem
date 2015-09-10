@@ -15,6 +15,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 @Entity
 @Table(name="user_journey")
 public class UserJourneyDTO implements Serializable{
@@ -25,61 +28,55 @@ public class UserJourneyDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private int journeyId;
-	private MetroUserDTO user;
-	private TrainJourneyDTO trainJourney;
-	private Date scheduledStartTime;
-	private Date actualStartTime;
-	private Date endTime;
-	private MetroStationDTO sourceStation;
-	private MetroStationDTO destinationStation;
-	private Date swipeInTime;
-	private Date swipeOutTime;
-	
-	/**
-	 * Default constructor
-	 */
-	public UserJourneyDTO(){
-		
-	}
-	
-	public UserJourneyDTO(MetroUserDTO user,Date swipeInTime,
-			MetroStationDTO source,MetroStationDTO destination)
-	{
-	  this.user=user;
-	  this.swipeInTime=swipeInTime;
-	  this.sourceStation=source;
-	  this.destinationStation=destination;
+    private MetroUserDTO user;
+    private TrainJourneyDTO trainJourney;
+    private Date swipeInTime;
+    private Date swipeOutTime;
+    private Date boardedTime;
+    private Date alightedTime;
+    private MetroStationDTO swipeInStation;
+    private MetroStationDTO swipeOutStation;
+    
+    
+    public UserJourneyDTO(MetroUserDTO user,Date swipeInTime,MetroStationDTO swipeInStation) {
+		this.user=user;
+		this.swipeInTime=swipeInTime;
+		this.swipeInStation=swipeInStation;
 	}
 	
 	/**
 	 * @return the journeyId
 	 */
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="journey_id")
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
 	public int getJourneyId() {
 		return journeyId;
 	}
+
 	/**
 	 * @param journeyId the journeyId to set
 	 */
 	public void setJourneyId(int journeyId) {
 		this.journeyId = journeyId;
 	}
+
 	/**
 	 * @return the user
 	 */
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER,optional=false)
+	@Fetch(FetchMode.JOIN)
 	@JoinColumn(name="user_id",nullable=false)
 	public MetroUserDTO getUser() {
 		return user;
 	}
+
 	/**
 	 * @param user the user to set
 	 */
 	public void setUser(MetroUserDTO user) {
 		this.user = user;
 	}
+
 	/**
 	 * @return the trainJourney
 	 */
@@ -88,96 +85,30 @@ public class UserJourneyDTO implements Serializable{
 	public TrainJourneyDTO getTrainJourney() {
 		return trainJourney;
 	}
+
 	/**
 	 * @param trainJourney the trainJourney to set
 	 */
 	public void setTrainJourney(TrainJourneyDTO trainJourney) {
 		this.trainJourney = trainJourney;
 	}
-	/**
-	 * @return the scheduledStartTime
-	 */
-	@Column(name="scheduled_start_time",nullable=true)
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getScheduledStartTime() {
-		return scheduledStartTime;
-	}
-	/**
-	 * @param scheduledStartTime the scheduledStartTime to set
-	 */
-	public void setScheduledStartTime(Date scheduledStartTime) {
-		this.scheduledStartTime = scheduledStartTime;
-	}
-	/**
-	 * @return the actualStartTime
-	 */
-	@Column(name="actual_start_time")
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getActualStartTime() {
-		return actualStartTime;
-	}
-	/**
-	 * @param actualStartTime the actualStartTime to set
-	 */
-	public void setActualStartTime(Date actualStartTime) {
-		this.actualStartTime = actualStartTime;
-	}
-	/**
-	 * @return the endTime
-	 */
-	@Column(name="end_time")
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getEndTime() {
-		return endTime;
-	}
-	/**
-	 * @param endTime the endTime to set
-	 */
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-	/**
-	 * @return the sourceStation
-	 */
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="source_station_id",nullable=false)
-	public MetroStationDTO getSourceStation() {
-		return sourceStation;
-	}
-	/**
-	 * @param sourceStation the sourceStation to set
-	 */
-	public void setSourceStation(MetroStationDTO sourceStation) {
-		this.sourceStation = sourceStation;
-	}
-	/**
-	 * @return the destinationStation
-	 */
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="dest_station_id",nullable=false)
-	public MetroStationDTO getDestinationStation() {
-		return destinationStation;
-	}
-	/**
-	 * @param destinationStation the destinationStation to set
-	 */
-	public void setDestinationStation(MetroStationDTO destinationStation) {
-		this.destinationStation = destinationStation;
-	}
+
 	/**
 	 * @return the swipeInTime
 	 */
-	@Column(name="swipe_in_time",nullable=false)
+	@Column(name="swipe_in_time")
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getSwipeInTime() {
 		return swipeInTime;
 	}
+
 	/**
 	 * @param swipeInTime the swipeInTime to set
 	 */
 	public void setSwipeInTime(Date swipeInTime) {
 		this.swipeInTime = swipeInTime;
 	}
+
 	/**
 	 * @return the swipeOutTime
 	 */
@@ -186,13 +117,78 @@ public class UserJourneyDTO implements Serializable{
 	public Date getSwipeOutTime() {
 		return swipeOutTime;
 	}
+
 	/**
 	 * @param swipeOutTime the swipeOutTime to set
 	 */
 	public void setSwipeOutTime(Date swipeOutTime) {
 		this.swipeOutTime = swipeOutTime;
 	}
-	
+
+	/**
+	 * @return the boardedTime
+	 */
+	@Column(name="boarded_time")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getBoardedTime() {
+		return boardedTime;
+	}
+
+	/**
+	 * @param boardedTime the boardedTime to set
+	 */
+	public void setBoardedTime(Date boardedTime) {
+		this.boardedTime = boardedTime;
+	}
+
+	/**
+	 * @return the alightedTime
+	 */
+	@Column(name="alighted_time")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getAlightedTime() {
+		return alightedTime;
+	}
+
+	/**
+	 * @param alightedTime the alightedTime to set
+	 */
+	public void setAlightedTime(Date alightedTime) {
+		this.alightedTime = alightedTime;
+	}
+
+	/**
+	 * @return the swipeInStation
+	 */
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="swipe_in_station_id")
+	public MetroStationDTO getSwipeInStation() {
+		return swipeInStation;
+	}
+
+	/**
+	 * @param swipeInStation the swipeInStation to set
+	 */
+	public void setSwipeInStation(MetroStationDTO swipeInStation) {
+		this.swipeInStation = swipeInStation;
+	}
+
+	/**
+	 * @return the swipeOutStation
+	 */
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="swipe_out_station_id")
+	public MetroStationDTO getSwipeOutStation() {
+		return swipeOutStation;
+	}
+
+	/**
+	 * @param swipeOutStation the swipeOutStation to set
+	 */
+	public void setSwipeOutStation(MetroStationDTO swipeOutStation) {
+		this.swipeOutStation = swipeOutStation;
+	}
+
 	@Override
 	public boolean equals(Object obj){
 		
