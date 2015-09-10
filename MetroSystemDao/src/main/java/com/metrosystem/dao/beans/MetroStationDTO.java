@@ -26,9 +26,9 @@ public class MetroStationDTO implements Serializable{
 	private String name;
 	private Set<StationRouteDTO> stationRoutes;
 	private GeoLocationDTO location;
-	private Set<UserJourneyDTO> boardedTravellers;
-	private Set<UserJourneyDTO> alightedTravellers;
 	private Set<TrainJourneyMonitorDTO> monitors;
+	private Set<UserJourneyDTO> swipedInUsers;
+	private Set<UserJourneyDTO> swipedOutUsers;
 	
 	/**
 	 * Default constructor
@@ -94,35 +94,6 @@ public class MetroStationDTO implements Serializable{
 		this.location = location;
 	}
 	
-	/**
-	 * @return the boardedTravellers
-	 */
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="sourceStation")
-	public Set<UserJourneyDTO> getBoardedTravellers() {
-		return boardedTravellers;
-	}
-
-	/**
-	 * @param boardedTravellers the boardedTravellers to set
-	 */
-	public void setBoardedTravellers(Set<UserJourneyDTO> boardedTravellers) {
-		this.boardedTravellers = boardedTravellers;
-	}
-
-	/**
-	 * @return the alightedTravellers
-	 */
-	@OneToMany(mappedBy="destinationStation",fetch=FetchType.LAZY)
-	public Set<UserJourneyDTO> getAlightedTravellers() {
-		return alightedTravellers;
-	}
-
-	/**
-	 * @param alightedTravellers the alightedTravellers to set
-	 */
-	public void setAlightedTravellers(Set<UserJourneyDTO> alightedTravellers) {
-		this.alightedTravellers = alightedTravellers;
-	}
 
 	/**
 	 * @return the stationRoutes
@@ -152,6 +123,36 @@ public class MetroStationDTO implements Serializable{
 	 */
 	public void setMonitors(Set<TrainJourneyMonitorDTO> monitors) {
 		this.monitors = monitors;
+	}
+
+	/**
+	 * @return the swipedInUsers
+	 */
+	@OneToMany(mappedBy="swipeInStation")
+	public Set<UserJourneyDTO> getSwipedInUsers() {
+		return swipedInUsers;
+	}
+
+	/**
+	 * @param swipedInUsers the swipedInUsers to set
+	 */
+	public void setSwipedInUsers(Set<UserJourneyDTO> swipedInUsers) {
+		this.swipedInUsers = swipedInUsers;
+	}
+
+	/**
+	 * @return the swipedOutUsers
+	 */
+	@OneToMany(mappedBy="swipeOutStation")
+	public Set<UserJourneyDTO> getSwipedOutUsers() {
+		return swipedOutUsers;
+	}
+
+	/**
+	 * @param swipedOutUsers the swipedOutUsers to set
+	 */
+	public void setSwipedOutUsers(Set<UserJourneyDTO> swipedOutUsers) {
+		this.swipedOutUsers = swipedOutUsers;
 	}
 
 	@Override

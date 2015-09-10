@@ -11,8 +11,8 @@ public class MetroStationBO {
 	private String name;
 	private Set<RouteBO> routes;
 	private GeoLocationBO location;
-	private Set<UserJourneyBO> boardedTravellers;
-	private Set<UserJourneyBO> alightedTravellers;
+	private Set<UserJourneyBO> swipedInUsers;
+	private Set<UserJourneyBO> swipedOutUsers;
 	private Set<TrainJourneyMonitorBO> monitors;
 	
 	/**
@@ -28,15 +28,15 @@ public class MetroStationBO {
 	}
 	
 	public MetroStationBO(String name, Set<RouteBO> routes,
-			              GeoLocationBO location, Set<UserJourneyBO> boardedTravellers,
-			              Set<UserJourneyBO> alightedTravellers,
+			              GeoLocationBO location, Set<UserJourneyBO> swipedInUsers,
+			              Set<UserJourneyBO> swipedOutUsers,
 			              Set<TrainJourneyMonitorBO> monitors) 
 	{
 		this.name = name;
 		this.routes = routes;
 		this.location = location;
-		this.boardedTravellers = boardedTravellers;
-		this.alightedTravellers = alightedTravellers;
+		this.swipedInUsers = swipedInUsers;
+		this.swipedOutUsers = swipedOutUsers;
 		this.monitors = monitors;
 	}
 
@@ -99,29 +99,29 @@ public class MetroStationBO {
 	/**
 	 * @return the boardedTravellers
 	 */
-	public Set<UserJourneyBO> getBoardedTravellers() {
-		return boardedTravellers;
+	public Set<UserJourneyBO> getSwipedInUsers() {
+		return swipedInUsers;
 	}
 
 	/**
 	 * @param boardedTravellers the boardedTravellers to set
 	 */
-	public void setBoardedTravellers(Set<UserJourneyBO> boardedTravellers) {
-		this.boardedTravellers = boardedTravellers;
+	public void setSwipedInUseres(Set<UserJourneyBO> swipedInUsers) {
+		this.swipedInUsers = swipedInUsers;
 	}
 
 	/**
 	 * @return the alightedTravellers
 	 */
-	public Set<UserJourneyBO> getAlightedTravellers() {
-		return alightedTravellers;
+	public Set<UserJourneyBO> getSwipedOutUsers() {
+		return swipedOutUsers;
 	}
 
 	/**
 	 * @param alightedTravellers the alightedTravellers to set
 	 */
-	public void setAlightedTravellers(Set<UserJourneyBO> alightedTravellers) {
-		this.alightedTravellers = alightedTravellers;
+	public void setSwipedOutUsers(Set<UserJourneyBO> swipedOutUsers) {
+		this.swipedOutUsers = swipedOutUsers;
 	}
 
 	/**
