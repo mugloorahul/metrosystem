@@ -37,6 +37,8 @@ public class UserJourneyDTO implements Serializable{
     private MetroStationDTO swipeInStation;
     private MetroStationDTO swipeOutStation;
     
+    //Default constructor
+    public UserJourneyDTO(){}
     
     public UserJourneyDTO(MetroUserDTO user,Date swipeInTime,MetroStationDTO swipeInStation) {
 		this.user=user;
@@ -49,6 +51,7 @@ public class UserJourneyDTO implements Serializable{
 	 */
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="journey_id")
 	public int getJourneyId() {
 		return journeyId;
 	}

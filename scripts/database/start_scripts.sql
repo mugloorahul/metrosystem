@@ -43,7 +43,7 @@ CREATE TABLE net_banking_payment(pay_method_id INT PRIMARY KEY,password VARCHAR(
 
 CREATE TABLE train_journey(journey_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),train_number INT NOT NULL,scheduled_start_time TIMESTAMP NOT NULL,actual_start_time TIMESTAMP,end_time TIMESTAMP,CONSTRAINT fk_train FOREIGN KEY(train_number) REFERENCES metro_train(train_number));
 
-CREATE TABLE user_journey(journey_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),user_id INT NOT NULL,train_journey_id INT, swipe_in_time TIMESTAMP NOT NULL ,boarded_time TIMESTAMP,alighted_time TIMESTAMP,swipe_in_station_id INT ,swipe_out_station_id INT NOT NULL,swipe_out_time TIMESTAMP);
+CREATE TABLE user_journey(journey_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),user_id INT NOT NULL,train_journey_id INT, swipe_in_time TIMESTAMP NOT NULL ,boarded_time TIMESTAMP,alighted_time TIMESTAMP,swipe_in_station_id INT ,swipe_out_station_id INT,swipe_out_time TIMESTAMP);
 
 ALTER TABLE user_journey ADD CONSTRAINT fk_train_journey FOREIGN KEY(train_journey_id) REFERENCES train_journey(journey_id);
 

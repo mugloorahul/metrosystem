@@ -117,6 +117,7 @@ public class UserJourneyServiceImpl implements IUserJourneyService {
 		    }
 		    
 		    swipeInJourney.setBoardedTime(boardTime);
+		    swipeInJourney.setTrainJourney(trainJourney);
 		    userJourneyDao.update(swipeInJourney);
 		}
 		catch(Throwable e){
@@ -184,7 +185,7 @@ public class UserJourneyServiceImpl implements IUserJourneyService {
 		    //Get the latest swipe in journey
 		    UserJourneyDTO swipeInJourney = userJourneyDao.queryLatestSwippedInjourney(userIdentifier);
 		    if(swipeInJourney == null){
-		    	throw new ServiceValidationException("User " + userIdentifier + " cannot swipe out without swiping int at any station.");
+		    	throw new ServiceValidationException("User " + userIdentifier + " cannot swipe out without swiping in at any station.");
 		    }
 		    Date swipeInTime = swipeInJourney.getSwipeInTime();
 		    if(swipeOutTime.compareTo(swipeInTime) < 0){
@@ -196,6 +197,7 @@ public class UserJourneyServiceImpl implements IUserJourneyService {
 		    	throw new ServiceValidationException("User " + userIdentifier + " cannot swipe out before alight time: " + alightTime);
 		    }
 		    swipeInJourney.setSwipeOutTime(swipeOutTime);
+		    swipeInJourney.setSwipeOutStation(station);
 		    userJourneyDao.update(swipeInJourney);
 		}
 		catch(Throwable e){

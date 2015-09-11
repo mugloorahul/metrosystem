@@ -45,12 +45,66 @@ public class UserJourneyServiceTest {
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND,0);
 			Date swipeInTime = calendar.getTime();
-			Integer journeyId = userJourneyService.swipeIn("mugloorahul1", "Pune", swipeInTime);
+			Integer journeyId = userJourneyService.swipeIn("mugloorahul", "Pune Junction", swipeInTime);
 		    assertTrue(journeyId != null);
 		}
 		catch(MetroSystemServiceException e){
 			e.printStackTrace();
 			assertTrue(false);
 		}
+	}
+	
+	@Test
+	public void boardTrain(){
+		
+		try{
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.HOUR_OF_DAY, 15);
+			calendar.set(Calendar.MINUTE, 30);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND,0);
+			Date boardTime = calendar.getTime();
+			userJourneyService.boardTrain("mugloorahul", 2, boardTime);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}		
+	}
+	
+	@Test
+	public void alightTrain(){
+		
+		try{
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.HOUR_OF_DAY, 15);
+			calendar.set(Calendar.MINUTE, 45);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND,0);
+			Date alightTime = calendar.getTime();
+			userJourneyService.alightTrain("mugloorahul", 2, alightTime);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}		
+	}
+	
+	@Test
+	public void swipeOut(){
+		
+		try{
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.HOUR_OF_DAY, 16);
+			calendar.set(Calendar.MINUTE, 45);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND,0);
+			Date swipeOutTime = calendar.getTime();
+			userJourneyService.swipeOut("mugloorahul", "Jammu Tawi", swipeOutTime);
+		}
+		catch(MetroSystemServiceException e){
+			e.printStackTrace();
+			assertTrue(false);
+		}		
 	}
 }

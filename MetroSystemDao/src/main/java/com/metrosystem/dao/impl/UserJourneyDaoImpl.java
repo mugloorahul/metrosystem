@@ -23,12 +23,12 @@ public class UserJourneyDaoImpl extends MetroSystemDaoImpl<Integer, UserJourneyD
 		try{
 			String query = "SELECT journey" +
 		                   " FROM UserJourneyDTO journey" +
-					       " INNER JOIN journey.user" +
-		                   " WHERE journey.user.uniqueIdentifier = ?" +
-					       " AND journey.swipeOutTime = (" +
-		                   "                                SELECT max(swipeOutTime)" +
+					       " INNER JOIN journey.user user" +
+		                   " WHERE user.uniqueIdentifier = ?" +
+					       " AND journey.swipeInTime = (" +
+		                   "                                SELECT max(swipeInTime)" +
 					       "                                FROM UserJourneyDTO journey_inner" +
-		                   "                                WHERE journey_inner.user = journey.user" +
+		                   "                                WHERE journey_inner.user = user" +
 					       "                                  AND journey_inner.swipeOutTime IS NULL" +
 		                   "                                GROUP BY journey_inner.user" +
 					       "                            )";
@@ -52,13 +52,13 @@ public class UserJourneyDaoImpl extends MetroSystemDaoImpl<Integer, UserJourneyD
 		try{
 			String query = "SELECT journey" +
 		                   " FROM UserJourneyDTO journey" +
-					       " INNER JOIN journey.user" +
-		                   " WHERE journey.user.uniqueIdentifier = ?" +
+					       " INNER JOIN journey.user user" +
+		                   " WHERE user.uniqueIdentifier = ?" +
 					       "   AND journey.swipeInTime = (" +
 		                   "                             SELECT max(swipeInTime)" +
 					       "                             FROM UserJourneyDTO journey_inner" +
-		                   "                             WHERE journey_inner.user = journey.user" +
-					       "                               AND journey_inner.swipeOutTime IS NOT NULL" +
+		                   "                             WHERE journey_inner.user = user" +
+					       "                               AND journey_inner.swipeOutTime IS  NULL" +
 		                   "                             GROUP BY journey_inner.user" +
 					       "                             )";
 			
@@ -81,14 +81,14 @@ public class UserJourneyDaoImpl extends MetroSystemDaoImpl<Integer, UserJourneyD
 		try{
 			String query = "SELECT journey"+
 		                   " FROM UserJourneyDTO journey" +
-					       " INNER JOIN journey.user" +
-		                   " WHERE journey.user.uniqueIdentifier = ?" +
+					       " INNER JOIN journey.user user" +
+		                   " WHERE user.uniqueIdentifier = ?" +
 					       "  AND journey.swipeInTime = (" +
 		                   "                            SELECT max(swipeInTime)" +
 					       "                            FROM UserJourneyDTO journey_inner" +
-		                   "                            WHERE journey.user = journey_inner.user" +
-					       "                              AND journey.boardedTime IS NOT NULL" +
-		                   "                              AND journey.alightedTime IS NULL" +
+		                   "                            WHERE user = journey_inner.user" +
+					       "                              AND journey_inner.boardedTime IS NOT NULL" +
+		                   "                              AND journey_inner.alightedTime IS NULL" +
 		                   "                            GROUP BY journey_inner.user" +
 					       "                            )";
 			
