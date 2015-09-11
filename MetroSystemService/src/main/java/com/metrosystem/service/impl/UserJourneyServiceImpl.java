@@ -65,6 +65,13 @@ public class UserJourneyServiceImpl implements IUserJourneyService {
 			if(station == null){
 				throw new ServiceValidationException("Invalid swipe in station. No station exists with name: " + swipeInStation);
 			}
+			
+			//Check if there is a duplicate journey with same wwipe in time
+			UserJourneyDTO duplicateJourney = userJourneyDao.queryJourneyBySwipeInTime(userIdentifier, swipeInTime);
+			if(duplicateJourney != null){
+				throw new ServiceValidationException("Duplicate journey found with same swipe in time: " + duplicateJourney.getSwipeInTime());
+			}
+			
 			//Check if any user journey is there without swipe out time
 			UserJourneyDTO incompleteJourney = userJourneyDao.queryLatestJourneyWithoutSwipeOut(userIdentifier);
 			if(incompleteJourney != null){
