@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="HelloWorldService" targetNamespace="http://ws.metrosystem.com/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ws.metrosystem.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+       <xs:element name="getHelloWorldAsString" type="tns:getHelloWorldAsString"></xs:element>
+       <xs:element name="getHelloWorldAsStringResponse" type="tns:getHelloWorldAsStringResponse"></xs:element>
+
+       <xs:complexType name="getHelloWorldAsString">
+          <xs:sequence>
+              <xs:element name="user" type="tns:user" minOccurs="0"></xs:element>
+          </xs:sequence>
+       </xs:complexType>
+
+       <xs:complexType name="user">
+          <xs:sequence>
+              <xs:element name="name" type="xs:string" minOccurs="0"></xs:element>
+          </xs:sequence>
+       </xs:complexType>
+
+       <xs:complexType name="getHelloWorldAsStringResponse">
+          <xs:sequence>
+             <xs:element name="user" type="tns:user" minOccurs="0"></xs:element>
+          </xs:sequence>
+       </xs:complexType>
+    </xsd:schema>
+  </types>
+  <message name="getHelloWorldAsString">
+    <part name="parameters" element="tns:getHelloWorldAsString">
+    </part>
+  </message>
+  <message name="getHelloWorldAsStringResponse">
+    <part name="parameters" element="tns:getHelloWorldAsStringResponse">
+    </part>
+  </message>
+  <portType name="HelloWorld">
+    <operation name="getHelloWorldAsString">
+      <input message="tns:getHelloWorldAsString">
+      </input>
+      <output message="tns:getHelloWorldAsStringResponse">
+      </output>
+    </operation>
+  </portType>
+  <binding name="HelloWorldImplPortBinding" type="tns:HelloWorld">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getHelloWorldAsString">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="HelloWorldService">
+    <port name="HelloWorldImplPort" binding="tns:HelloWorldImplPortBinding">
+      <soap:address location="http://localhost:9087/spring-ws-tutorial/HelloWorldService"/>
+    </port>
+  </service>
+</definitions>
