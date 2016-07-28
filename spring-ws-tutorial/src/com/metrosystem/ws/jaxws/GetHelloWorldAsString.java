@@ -31,6 +31,7 @@ public class GetHelloWorldAsString {
      */
     public void setUser(com.metrosystem.ws.User user) {
         this.user = user;
+        System.out.println("testing");
     }
 
 }
